@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>erlang配置emacs开发 - 博客首页</title>
+    <meta name="keywords" content="erlang,erlang ide, emacs erlang, emacs 配置 erlang ide" />
+    <meta name="description" content="emacs配置成erlang开发工具" />
+    <meta name="author" content="lai zhengfu">
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="http://lib.sinaapp.com/js/bootstrap/latest/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/google-code-prettify/prettify.css" rel="stylesheet" type="text/css" media="all">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/bootstrap/latest/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/google-code-prettify/prettify.js"></script> 
+    <script type="text/javascript" src="/assets/themes/twitter/google-code-prettify/lang-lisp.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/js/application.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">博客首页</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/archive.html">归档</a></li>
+              <li><a href="/categories.html">目录</a></li>
+              <li><a href="/pages.html">页面</a></li>
+              <li><a href="/tags.html">标签</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+<div class="page-header">
+  <h1>erlang配置emacs开发 </h1>
+</div>
+
+
+<div class="row">
+  <div class="span8">
+    <p>打开emacs配置文件, 输入配置文件</p>
+<pre class='prettyprint linenums lang-lisp'>
+(setq load-path (cons "*erlang安装目录*/lib/tools-*version*/emacs" load-path))
+(setq erlang-root-dir "*erlang安装目录*")
+(setq exec-path (cons "*erlang安装目录*/bin" exec-path))
+(require 'erlang-start)
+</pre>
+<p>用emacs打开任意一个<code>*.erl</code>源文件, 在菜单栏将会看到<code>Erlang</code>菜单选项.</p>
+
+<p>打开erlang终端<code>C-c C-z</code></p>
+
+<p>编译文件<code>C-c C-k</code></p>
+    <hr>
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev"><a href="/python/2012/05/21/bottle-web-learn" title="使用bottle搭建web">&larr; 上一篇</a></li>
+      
+        <li><a href="/archive.html">归档</a></li>
+      
+        <li class="next"><a href="/linux/2012/05/21/tomcat-start-stop-script" title="linux tomcat 脚本">下一篇 &rarr;</a></li>
+      
+      </ul>
+    </div>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+  
+  <div class="span4">
+    <h4>发布日期</h4>
+    <div class="date"><span>2012-05-21</span></div>
+
+  
+    <h4>标签</h4>
+    <ul class="tag_box">
+    
+    
+
+
+  
+     
+    	<li><a href="/tags.html#erlang-ref">erlang <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#emacs-ref">emacs <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#ide-ref">ide <span>2</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+
+  <section>
+    <h4>最近发表</h4>
+    <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/linux/2012/06/10/linux-subversion-install">linux 安装 svn 服务</a>
+      </li>
+    
+      <li class="post">
+        <a href="/python/2012/06/07/simple-python-web-bottle">微型 Python Web 框架 Bottle</a>
+      </li>
+    
+      <li class="post">
+        <a href="/windows/2012/05/26/windows-regedit-environment">windows 注册表 修改系统环境变量</a>
+      </li>
+    
+      <li class="post">
+        <a href="/linux/2012/05/25/ubuntu-static-ip-address">ubuntu设置静态ip</a>
+      </li>
+    
+      <li class="post">
+        <a href="/linux/2012/05/25/bash-key">让你提升命令行效率的 Bash 快捷键</a>
+      </li>
+    
+    </ul>
+  </section>
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; lai zhengfu 2012 
+          基于 <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          和 <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> 构建
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+

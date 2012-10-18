@@ -1,0 +1,458 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Python支持上传的SimpleHTTPServer - 博客首页</title>
+    <meta name="keywords" content="python,文件上传,upload,file,http,httpserver" />
+    <meta name="description" content="python文件上传" />
+    <meta name="author" content="lai zhengfu">
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="http://lib.sinaapp.com/js/bootstrap/latest/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/google-code-prettify/prettify.css" rel="stylesheet" type="text/css" media="all">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/bootstrap/latest/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/google-code-prettify/prettify.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/js/application.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">博客首页</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/archive.html">归档</a></li>
+              <li><a href="/categories.html">目录</a></li>
+              <li><a href="/pages.html">页面</a></li>
+              <li><a href="/tags.html">标签</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+<div class="page-header">
+  <h1>Python支持上传的SimpleHTTPServer </h1>
+</div>
+
+
+<div class="row">
+  <div class="span8">
+    <p>在某个目录下运行, 访问<a href='http://127.0.0.1:8000'>http://127.0.0.1:8000</a></p>
+
+<p>即可对该目录浏览, 或者上传文件.</p>
+<pre class='prettyprint linenums'>
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+"""Simple HTTP Server With Upload.
+
+This module builds on BaseHTTPServer by implementing the standard GET
+and HEAD requests in a fairly straightforward manner.
+
+"""
+
+
+__version__ = "0.1"
+
+import os
+import posixpath
+import BaseHTTPServer
+import urllib
+import cgi
+import shutil
+import mimetypes
+import re
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
+
+class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+
+    """Simple HTTP request handler with GET/HEAD/POST commands.
+
+    This serves files from the current directory and any of its
+    subdirectories.  The MIME type for files is determined by
+    calling the .guess_type() method. And can reveive file uploaded
+    by client.
+
+    The GET/HEAD/POST requests are identical except that the HEAD
+    request omits the actual contents of the file.
+
+    """
+
+    server_version = "SimpleHTTPWithUpload/" + __version__
+
+    def do_GET(self):
+        """Serve a GET request."""
+        f = self.send_head()
+        if f:
+            self.copyfile(f, self.wfile)
+            f.close()
+
+    def do_HEAD(self):
+        """Serve a HEAD request."""
+        f = self.send_head()
+        if f:
+            f.close()
+
+    def do_POST(self):
+        """Serve a POST request."""
+        r, info = self.deal_post_data()
+        print r, info, "by: ", self.client_address
+        f = StringIO()
+        f.write('&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"&gt;')
+        f.write("&lt;html&gt;\n&lt;title&gt;Upload Result Page&lt;/title&gt;\n")
+        f.write("&lt;body&gt;\n&lt;h2&gt;Upload Result Page&lt;/h2&gt;\n")
+        f.write("&lt;hr&gt;\n")
+        if r:
+            f.write("&lt;strong&gt;Success:&lt;/strong&gt;")
+        else:
+            f.write("&lt;strong&gt;Failed:&lt;/strong&gt;")
+        f.write(info)
+        f.write("&lt;br&gt;&lt;a href=\"%s\"&gt;back&lt;/a&gt;" % self.headers['referer'])
+        f.write("&lt;hr&gt;&lt;/body&gt;\n&lt;/html&gt;\n")
+        length = f.tell()
+        f.seek(0)
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.send_header("Content-Length", str(length))
+        self.end_headers()
+        if f:
+            self.copyfile(f, self.wfile)
+            f.close()
+        
+    def deal_post_data(self):
+        boundary = self.headers.plisttext.split("=")[1]
+        remainbytes = int(self.headers['content-length'])
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        if not boundary in line:
+            return (False, "Content NOT begin with boundary")
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        fn = re.findall(r'Content-Disposition.*name="file"; filename="(.*)"', line)
+        if not fn:
+            return (False, "Can't find out file name...")
+        path = self.translate_path(self.path)
+        fn = os.path.join(path, fn[0])
+        while os.path.exists(fn):
+            fn += "_"
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        try:
+            out = open(fn, 'wb')
+        except IOError:
+            return (False, "Can't create file to write, do you have permission to write?")
+                
+        preline = self.rfile.readline()
+        remainbytes -= len(preline)
+        while remainbytes &gt; 0:
+            line = self.rfile.readline()
+            remainbytes -= len(line)
+            if boundary in line:
+                preline = preline[0:-1]
+                if preline.endswith('\r'):
+                    preline = preline[0:-1]
+                out.write(preline)
+                out.close()
+                return (True, "File '%s' upload success!" % fn)
+            else:
+                out.write(preline)
+                preline = line
+        return (False, "Unexpect Ends of data.")
+
+    def send_head(self):
+        """Common code for GET and HEAD commands.
+
+        This sends the response code and MIME headers.
+
+        Return value is either a file object (which has to be copied
+        to the outputfile by the caller unless the command was HEAD,
+        and must be closed by the caller under all circumstances), or
+        None, in which case the caller has nothing further to do.
+
+        """
+        path = self.translate_path(self.path)
+        f = None
+        if os.path.isdir(path):
+            if not self.path.endswith('/'):
+                # redirect browser - doing basically what apache does
+                self.send_response(301)
+                self.send_header("Location", self.path + "/")
+                self.end_headers()
+                return None
+            for index in "index.html", "index.htm":
+                index = os.path.join(path, index)
+                if os.path.exists(index):
+                    path = index
+                    break
+            else:
+                return self.list_directory(path)
+        ctype = self.guess_type(path)
+        try:
+            # Always read in binary mode. Opening files in text mode may cause
+            # newline translations, making the actual size of the content
+            # transmitted *less* than the content-length!
+            f = open(path, 'rb')
+        except IOError:
+            self.send_error(404, "File not found")
+            return None
+        self.send_response(200)
+        self.send_header("Content-type", ctype)
+        fs = os.fstat(f.fileno())
+        self.send_header("Content-Length", str(fs[6]))
+        self.send_header("Last-Modified", self.date_time_string(fs.st_mtime))
+        self.end_headers()
+        return f
+
+    def list_directory(self, path):
+        """Helper to produce a directory listing (absent index.html).
+
+        Return value is either a file object, or None (indicating an
+        error).  In either case, the headers are sent, making the
+        interface the same as for send_head().
+
+        """
+        try:
+            list = os.listdir(path)
+        except os.error:
+            self.send_error(404, "No permission to list directory")
+            return None
+        list.sort(key=lambda a: a.lower())
+        f = StringIO()
+        displaypath = cgi.escape(urllib.unquote(self.path))
+        f.write('&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"&gt;')
+        f.write("&lt;html&gt;\n&lt;title&gt;Directory listing for %s&lt;/title&gt;\n" % displaypath)
+        f.write("&lt;body&gt;\n&lt;h2&gt;Directory listing for %s&lt;/h2&gt;\n" % displaypath)
+        f.write("&lt;hr&gt;\n")
+        f.write("&lt;form ENCTYPE=\"multipart/form-data\" method=\"post\"&gt;")
+        f.write("&lt;input name=\"file\" type=\"file\"/&gt;")
+        f.write("&lt;input type=\"submit\" value=\"upload\"/&gt;&lt;/form&gt;\n")
+        f.write("&lt;hr&gt;\n&lt;ul&gt;\n")
+        for name in list:
+            fullname = os.path.join(path, name)
+            displayname = linkname = name
+            # Append / for directories or @ for symbolic links
+            if os.path.isdir(fullname):
+                displayname = name + "/"
+                linkname = name + "/"
+            if os.path.islink(fullname):
+                displayname = name + "@"
+                # Note: a link to a directory displays with @ and links with /
+            f.write('&lt;li&gt;&lt;a href="%s"&gt;%s&lt;/a&gt;\n'
+                    % (urllib.quote(linkname), cgi.escape(displayname)))
+        f.write("&lt;/ul&gt;\n&lt;hr&gt;\n&lt;/body&gt;\n&lt;/html&gt;\n")
+        length = f.tell()
+        f.seek(0)
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.send_header("Content-Length", str(length))
+        self.end_headers()
+        return f
+
+    def translate_path(self, path):
+        """Translate a /-separated PATH to the local filename syntax.
+
+        Components that mean special things to the local file system
+        (e.g. drive or directory names) are ignored.  (XXX They should
+        probably be diagnosed.)
+
+        """
+        # abandon query parameters
+        path = path.split('?',1)[0]
+        path = path.split('#',1)[0]
+        path = posixpath.normpath(urllib.unquote(path))
+        words = path.split('/')
+        words = filter(None, words)
+        path = os.getcwd()
+        for word in words:
+            drive, word = os.path.splitdrive(word)
+            head, word = os.path.split(word)
+            if word in (os.curdir, os.pardir): continue
+            path = os.path.join(path, word)
+        return path
+
+    def copyfile(self, source, outputfile):
+        """Copy all data between two file objects.
+
+        The SOURCE argument is a file object open for reading
+        (or anything with a read() method) and the DESTINATION
+        argument is a file object open for writing (or
+        anything with a write() method).
+
+        The only reason for overriding this would be to change
+        the block size or perhaps to replace newlines by CRLF
+        -- note however that this the default server uses this
+        to copy binary data as well.
+
+        """
+        shutil.copyfileobj(source, outputfile)
+
+    def guess_type(self, path):
+        """Guess the type of a file.
+
+        Argument is a PATH (a filename).
+
+        Return value is a string of the form type/subtype,
+        usable for a MIME Content-type header.
+
+        The default implementation looks the file's extension
+        up in the table self.extensions_map, using application/octet-stream
+        as a default; however it would be permissible (if
+        slow) to look inside the data to make a better guess.
+
+        """
+
+        base, ext = posixpath.splitext(path)
+        if ext in self.extensions_map:
+            return self.extensions_map[ext]
+        ext = ext.lower()
+        if ext in self.extensions_map:
+            return self.extensions_map[ext]
+        else:
+            return self.extensions_map['']
+
+    if not mimetypes.inited:
+        mimetypes.init() # try to read system mime.types
+    extensions_map = mimetypes.types_map.copy()
+    extensions_map.update({
+        '': 'application/octet-stream', # Default
+        '.py': 'text/plain',
+        '.c': 'text/plain',
+        '.h': 'text/plain',
+        })
+
+
+def test(HandlerClass = SimpleHTTPRequestHandler,
+         ServerClass = BaseHTTPServer.HTTPServer):
+    BaseHTTPServer.test(HandlerClass, ServerClass)
+
+if __name__ == '__main__':
+    test()
+</pre>
+    <hr>
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev"><a href="/javascript/2012/05/22/jekyll-bootstrap-code-highlighting" title="jekyll-bootstrap添加代码高亮">&larr; 上一篇</a></li>
+      
+        <li><a href="/archive.html">归档</a></li>
+      
+        <li class="next"><a href="/css/2012/05/22/webkit-custom-scroll" title="webkit自定义滚动条">下一篇 &rarr;</a></li>
+      
+      </ul>
+    </div>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+  
+  <div class="span4">
+    <h4>发布日期</h4>
+    <div class="date"><span>2012-05-22</span></div>
+
+  
+    <h4>标签</h4>
+    <ul class="tag_box">
+    
+    
+
+
+  
+     
+    	<li><a href="/tags.html#python-ref">python <span>3</span></a></li>
+     
+    	<li><a href="/tags.html#server-ref">server <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#http-ref">http <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#web-ref">web <span>3</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+
+  <section>
+    <h4>最近发表</h4>
+    <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/linux/2012/06/10/linux-subversion-install">linux 安装 svn 服务</a>
+      </li>
+    
+      <li class="post">
+        <a href="/python/2012/06/07/simple-python-web-bottle">微型 Python Web 框架 Bottle</a>
+      </li>
+    
+      <li class="post">
+        <a href="/windows/2012/05/26/windows-regedit-environment">windows 注册表 修改系统环境变量</a>
+      </li>
+    
+      <li class="post">
+        <a href="/linux/2012/05/25/ubuntu-static-ip-address">ubuntu设置静态ip</a>
+      </li>
+    
+      <li class="post">
+        <a href="/linux/2012/05/25/bash-key">让你提升命令行效率的 Bash 快捷键</a>
+      </li>
+    
+    </ul>
+  </section>
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; lai zhengfu 2012 
+          基于 <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          和 <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> 构建
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+

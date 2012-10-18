@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>linux 安装 svn 服务 - 博客首页</title>
+    <meta name="keywords" content="linux,svn,svn服务,subversion" />
+    <meta name="description" content="linux下安装subversion" />
+    <meta name="author" content="lai zhengfu">
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="http://lib.sinaapp.com/js/bootstrap/latest/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/google-code-prettify/prettify.css" rel="stylesheet" type="text/css" media="all">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/bootstrap/latest/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/google-code-prettify/prettify.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/js/application.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">博客首页</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/archive.html">归档</a></li>
+              <li><a href="/categories.html">目录</a></li>
+              <li><a href="/pages.html">页面</a></li>
+              <li><a href="/tags.html">标签</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+<div class="page-header">
+  <h1>linux 安装 svn 服务 </h1>
+</div>
+
+
+<div class="row">
+  <div class="span8">
+    <h2 id='subversion'>安装subversion</h2>
+
+<p>linux下直接输入命令安装subversion</p>
+
+<p>debian</p>
+
+<pre><code>apt-get install subversion</code></pre>
+
+<p>redhat</p>
+
+<pre><code>yum install subversion</code></pre>
+
+<h2 id='svn'>创建svn库</h2>
+
+<p>安装完subversion后使用<code>svnadmin</code>创建一个库</p>
+
+<p>例如</p>
+
+<pre><code>svnadmin create /var/svn/repo</code></pre>
+
+<p>创建完毕后会生成几个目录</p>
+
+<ul>
+<li>conf</li>
+
+<li>db</li>
+
+<li>hooks</li>
+
+<li>locks</li>
+</ul>
+
+<p>还会创建2个文件</p>
+
+<ul>
+<li>README.txt</li>
+
+<li>format</li>
+</ul>
+
+<h2 id='svn'>配置svn</h2>
+
+<p>主要是修改<code>conf</code>下的几个配置文件</p>
+
+<ul>
+<li>authz</li>
+
+<li>passwd</li>
+
+<li>svnserve.conf</li>
+</ul>
+<table class='table table-bordered table-striped'>
+  <tr><td>authz</td><td>目录访问权限配置</td></tr>
+  <tr><td>passwd</td><td>帐号配置</td></tr>
+  <tr><td>svnserve.conf</td><td>基础配置, 指向用那些配置文件等</td></tr>
+</table>
+<h3 id='passwd'>修改passwd</h3>
+
+<p>passwd中的帐号是<code>帐号=密码</code>的方式存储, 直接写入就行</p>
+
+<pre><code>[users]
+admin = admin</code></pre>
+
+<h3 id='authz'>修改authz</h3>
+
+<p>authz下主要是3种节点</p>
+
+<ul>
+<li>aliases 配置别名, 这个不配置留空就行</li>
+
+<li>groups 配置组, 也可以不用配置</li>
+</ul>
+<pre><code>[aliases]
+
+[groups]
+system = admin
+
+[/]
+@system = rw
+
+[repos:/]
+admin = rw</code></pre>
+<p>其中直接写的是代表配置的是帐号的权限, 带<code>@</code>代表的是配置组的权限</p>
+
+<p>目录的配置还有更灵活的方式配置, 可以不用写的那么的死</p>
+
+<h3 id='svnserveconf'>修改svnserve.conf</h3>
+
+<p>直接贴上配置, 具体配置方式注释文档上写的很清楚, 以下是我的配置</p>
+
+<pre><code>[general]
+anon-access = none
+auth-access = write
+password-db = passwd
+authz-db = authz
+
+[sasl]</code></pre>
+
+<h3 id='svn'>启动svn服务</h3>
+
+<p>配置完毕后直接启动就行了, 通过svn客户端就能直接访问的</p>
+
+<pre><code> svnserve -d -r /var/svn/repo/</code></pre>
+
+<p>其中<code>svnserve</code> 还有挺多个启动参数, 就不一一介绍了</p>
+
+<h3 id='svn'>关闭svn服务</h3>
+
+<p>直接kill掉<code>svnserve</code>进程就行了</p>
+
+<pre><code>kill -9 `ps -ef | grep svnserve | grep -v grep | awk &#39;{print $2}&#39;`</code></pre>
+    <hr>
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev"><a href="/python/2012/06/07/simple-python-web-bottle" title="微型 Python Web 框架 Bottle">&larr; 上一篇</a></li>
+      
+        <li><a href="/archive.html">归档</a></li>
+      
+        <li class="next disabled"><a>下一篇 &rarr;</a>
+      
+      </ul>
+    </div>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+  
+  <div class="span4">
+    <h4>发布日期</h4>
+    <div class="date"><span>2012-06-10</span></div>
+
+  
+    <h4>标签</h4>
+    <ul class="tag_box">
+    
+    
+
+
+  
+     
+    	<li><a href="/tags.html#linux-ref">linux <span>5</span></a></li>
+     
+    	<li><a href="/tags.html#svn-ref">svn <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#subversion-ref">subversion <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#server-ref">server <span>2</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+
+  <section>
+    <h4>最近发表</h4>
+    <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/linux/2012/06/10/linux-subversion-install">linux 安装 svn 服务</a>
+      </li>
+    
+      <li class="post">
+        <a href="/python/2012/06/07/simple-python-web-bottle">微型 Python Web 框架 Bottle</a>
+      </li>
+    
+      <li class="post">
+        <a href="/windows/2012/05/26/windows-regedit-environment">windows 注册表 修改系统环境变量</a>
+      </li>
+    
+      <li class="post">
+        <a href="/linux/2012/05/25/ubuntu-static-ip-address">ubuntu设置静态ip</a>
+      </li>
+    
+      <li class="post">
+        <a href="/linux/2012/05/25/bash-key">让你提升命令行效率的 Bash 快捷键</a>
+      </li>
+    
+    </ul>
+  </section>
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; lai zhengfu 2012 
+          基于 <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          和 <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> 构建
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+

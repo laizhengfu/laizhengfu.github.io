@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>在github上搭建博客 - 博客首页</title>
+    <meta name="author" content="lai zhengfu">
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="http://lib.sinaapp.com/js/bootstrap/latest/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/google-code-prettify/prettify.css" rel="stylesheet" type="text/css" media="all">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/bootstrap/latest/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/google-code-prettify/prettify.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/js/application.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">博客首页</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/archive.html">归档</a></li>
+              <li><a href="/categories.html">目录</a></li>
+              <li><a href="/pages.html">页面</a></li>
+              <li><a href="/tags.html">标签</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+<div class="page-header">
+  <h1>在github上搭建博客 </h1>
+</div>
+
+
+<div class="row">
+  <div class="span8">
+    <h2 id='github'>注册github帐号</h2>
+
+<p>在github上注册帐号, 如果你的帐号为<code>heroin</code> 创建<code>heroin.github.com</code>这个项目.</p>
+
+<h2 id='jekyll'>安装jekyll</h2>
+
+<p>安装<code>jekyll</code>到github上, 这里我用的是 <a href='http://jekyllbootstrap.com/'>Jekyll-Bootstrap</a></p>
+
+<p>执行以下命令</p>
+
+<pre><code># git clone https://github.com/plusjade/jekyll-bootstrap.git heroin.github.com
+# cd heroin.github.com
+# git remote set-url origin git@github.com:heroin/heroin.github.com.git
+# git push origin master</code></pre>
+
+<p>然后直接访问<a href='http://heroin.github.com'>http://heroin.github.com</a>, 就能访问到你搭建的博客了.</p>
+
+<h2 id='jekyll'>配置jekyll</h2>
+
+<p>修改<code>_config.yml</code>文件</p>
+
+<p>将一些基础信息配置成想要的内容</p>
+
+<h4 id='id11'>配置首页</h4>
+
+<p>jekyllbootstrap默认的首页是<code>index.md</code></p>
+
+<p>但是如果需要分页效果的话需要使用的是<code>index.html</code>, 并且修改<code>_config.yml</code>, 添加一个配置项<code>paginate: 5</code></p>
+
+<p>详细的配置可以clone我的博客进行看<a href='https://github.com/heroin/heroin.github.com'>https://github.com/heroin/heroin.github.com</a></p>
+
+<h2 id='id12'>添加文章</h2>
+
+<p>在<code>_posts</code>目录下新建一个<code>markdown</code>(<code>*.md</code>)文件, 文件命名规范是<code>yyyy-mm-dd-url</code>, 例如该文章的文件为<code>2012-05-18-github-blog-jekyll-bootstrap.md</code></p>
+
+<p>得到的访问路径却是 <a href='/javascript/2012/05/18/github-blog-jekyll-bootstrap/'>/javascript/2012/05/18/github-blog-jekyll-bootstrap/</a><br />其中<code>/javascript</code>是在markdown文件中配置的.</p>
+
+<p>markdown文件头需要几个配置, 以下是该文章的头配置</p>
+<pre class='prettyprint linenums'>
+---
+layout: post
+title: 在github上搭建博客
+category: javascript
+tags: [github, bootstrap, jekyll, javascript]
+---
+</pre>
+<p>每个markdown必须在头部加上这段. 然后下面直接写markdown代码就行了.</p>
+
+<h2 id='id13'>配置域名</h2>
+
+<blockquote>
+<p>新建一个<code>CNAME</code>文件, 里面直接写上所配置的域名, 例如<code>heroin.so</code></p>
+</blockquote>
+
+<p>然后上域名提供商上配置域名解析, <code>A</code>记录到<code>207.97.227.245</code></p>
+
+<p>等待域名解析完毕即可, 直接访问<code>http://heroin.github.com</code> 会跳转至 <code>http://heroin.so</code></p>
+    <hr>
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev"><a href="/ide/2012/05/18/adobe-brackets-install" title="Adobe Brackets 安装体验">&larr; 上一篇</a></li>
+      
+        <li><a href="/archive.html">归档</a></li>
+      
+        <li class="next"><a href="/python/2012/05/21/bottle-web-learn" title="使用bottle搭建web">下一篇 &rarr;</a></li>
+      
+      </ul>
+    </div>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+  
+  <div class="span4">
+    <h4>发布日期</h4>
+    <div class="date"><span>2012-05-18</span></div>
+
+  
+    <h4>标签</h4>
+    <ul class="tag_box">
+    
+    
+
+
+  
+     
+    	<li><a href="/tags.html#github-ref">github <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#bootstrap-ref">bootstrap <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#jekyll-ref">jekyll <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#javascript-ref">javascript <span>4</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+
+  <section>
+    <h4>最近发表</h4>
+    <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/linux/2012/06/10/linux-subversion-install">linux 安装 svn 服务</a>
+      </li>
+    
+      <li class="post">
+        <a href="/python/2012/06/07/simple-python-web-bottle">微型 Python Web 框架 Bottle</a>
+      </li>
+    
+      <li class="post">
+        <a href="/windows/2012/05/26/windows-regedit-environment">windows 注册表 修改系统环境变量</a>
+      </li>
+    
+      <li class="post">
+        <a href="/linux/2012/05/25/ubuntu-static-ip-address">ubuntu设置静态ip</a>
+      </li>
+    
+      <li class="post">
+        <a href="/linux/2012/05/25/bash-key">让你提升命令行效率的 Bash 快捷键</a>
+      </li>
+    
+    </ul>
+  </section>
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; lai zhengfu 2012 
+          基于 <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          和 <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> 构建
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+

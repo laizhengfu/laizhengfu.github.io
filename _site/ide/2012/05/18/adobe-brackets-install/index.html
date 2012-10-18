@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Adobe Brackets 安装体验 - 博客首页</title>
+    <meta name="author" content="lai zhengfu">
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="http://lib.sinaapp.com/js/bootstrap/latest/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/google-code-prettify/prettify.css" rel="stylesheet" type="text/css" media="all">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/bootstrap/latest/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/google-code-prettify/prettify.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/js/application.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">博客首页</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/archive.html">归档</a></li>
+              <li><a href="/categories.html">目录</a></li>
+              <li><a href="/pages.html">页面</a></li>
+              <li><a href="/tags.html">标签</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+<div class="page-header">
+  <h1>Adobe Brackets 安装体验 </h1>
+</div>
+
+
+<div class="row">
+  <div class="span8">
+    <p>Brackets 是 Adobe 的开源 <code>HTML/CSS/JavaScript</code> 集成开发环境. Brackets 提供 Windows 和 OS X 平台支持.</p>
+
+<p>要想试用先<code>clone</code>以下几个项目</p>
+
+<p><a href='https://github.com/adobe/brackets'>https://github.com/adobe/brackets</a><br />brackets 执行文件(<code>win/mac</code>)<br /><a href='https://github.com/adobe/brackets-app'>https://github.com/adobe/brackets-app</a></p>
+
+<p>brackets 所依赖的js库<br /><a href='https://github.com/jblas/path-utils'>https://github.com/jblas/path-utils</a><br /><a href='https://github.com/adobe/CodeMirror2'>https://github.com/adobe/CodeMirror2</a><br /><a href='https://github.com/laktek/jQuery-Smart-Auto-Complete'>https://github.com/laktek/jQuery-Smart-Auto-Complete</a><br /><a href='https://github.com/douglascrockford/JSLinthttps://github.com/laktek/jQuery-Smart-Auto-Complete'>https://github.com/douglascrockford/JSLint</a></p>
+
+<pre><code># git clone git://github.com/adobe/brackets.git
+# git clone git://github.com/adobe/brackets-app.git
+
+# git clone git://github.com/jblas/path-utils.git
+# git clone git://github.com/adobe/CodeMirror2.git
+# git clone git://github.com/douglascrockford/JSLint.git
+# git clone git://github.com/laktek/jQuery-Smart-Auto-Complete.git</code></pre>
+
+<p><img alt='' src='/assets/blog/adobe-brackets-install/dir.png' /></p>
+
+<h4 id='id9'>安装步骤</h4>
+
+<blockquote>
+<p>将<code>brackets</code>内全部文件移动到<code>brackets-app/brackets</code><br />将<code>CodeMirror2</code>内全部文件移动到<code>brackets-app/brackets/src/thirdparty/CodeMirror2</code><br />将<code>path-utils</code>内全部文件移动到<code>brackets-app/brackets/src/thirdparty/path-utils</code><br />将<code>jQuery-Smart-Auto-Complete</code>内全部文件移动到<code>brackets-app/brackets/src/thirdparty/smart-auto-complete</code><br />将<code>JSLint</code>内全部文件移动到<code>brackets-app/brackets/src/thirdparty/jslint</code></p>
+</blockquote>
+
+<pre><code># cp -R brackets/* brackets-app/brackets/
+# cp -R CodeMirror2/* brackets-app/brackets/src/thirdparty/CodeMirror2/
+# cp -R jQuery-Smart-Auto-Complete/* brackets-app/brackets/src/thirdparty/smart-auto-complete/
+# cp -R JSLint/* brackets-app/brackets/src/thirdparty/jslint/
+# cp -R path-utils/* brackets-app/brackets/src/thirdparty/path-utils/</code></pre>
+
+<p>移动完后直接运行<code>brackets-app/win/bin/Brackets.exe</code>即可打开, 效果图如下:<br /><img alt='' src='/assets/blog/adobe-brackets-install/show.png' /></p>
+
+<h4 id='id10'>精简步骤</h4>
+
+<p><em>windows测试没问题, 应该也兼容于mac</em><br />在原有安装好的基础下, 将<code>brackets-app/bin/win</code>下全部文件, 复制到<code>brackets-app/brackets/bin</code>目录下.<br />然后将<code>brackets-app/brackets</code>目录单独拷贝出来, 直接打开<code>brackets/bin/Brackets.exe</code>即可运行.</p>
+
+<pre><code># mkdir brackets-app/brackets/bin
+# cp -R brackets-app/bin/win/* brackets-app/brackets/bin/</code></pre>
+    <hr>
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev"><a href="/other/2012/05/17/goole-hosts" title="google hosts">&larr; 上一篇</a></li>
+      
+        <li><a href="/archive.html">归档</a></li>
+      
+        <li class="next"><a href="/javascript/2012/05/18/github-blog-jekyll-bootstrap" title="在github上搭建博客">下一篇 &rarr;</a></li>
+      
+      </ul>
+    </div>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+  
+  <div class="span4">
+    <h4>发布日期</h4>
+    <div class="date"><span>2012-05-18</span></div>
+
+  
+    <h4>标签</h4>
+    <ul class="tag_box">
+    
+    
+
+
+  
+     
+    	<li><a href="/tags.html#adobe-ref">adobe <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#brackets-ref">brackets <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#ide-ref">ide <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#javascript-ref">javascript <span>4</span></a></li>
+     
+    	<li><a href="/tags.html#html-ref">html <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#css-ref">css <span>2</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+
+  <section>
+    <h4>最近发表</h4>
+    <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/linux/2012/06/10/linux-subversion-install">linux 安装 svn 服务</a>
+      </li>
+    
+      <li class="post">
+        <a href="/python/2012/06/07/simple-python-web-bottle">微型 Python Web 框架 Bottle</a>
+      </li>
+    
+      <li class="post">
+        <a href="/windows/2012/05/26/windows-regedit-environment">windows 注册表 修改系统环境变量</a>
+      </li>
+    
+      <li class="post">
+        <a href="/linux/2012/05/25/ubuntu-static-ip-address">ubuntu设置静态ip</a>
+      </li>
+    
+      <li class="post">
+        <a href="/linux/2012/05/25/bash-key">让你提升命令行效率的 Bash 快捷键</a>
+      </li>
+    
+    </ul>
+  </section>
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; lai zhengfu 2012 
+          基于 <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          和 <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> 构建
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+

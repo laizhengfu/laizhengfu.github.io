@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>webkit自定义滚动条 - 博客首页</title>
+    <meta name="author" content="lai zhengfu">
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="http://lib.sinaapp.com/js/bootstrap/latest/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/google-code-prettify/prettify.css" rel="stylesheet" type="text/css" media="all">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/bootstrap/latest/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/google-code-prettify/prettify.js"></script> 
+    <script type="text/javascript" src="/assets/themes/twitter/google-code-prettify/lang-css.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/js/application.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">博客首页</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/archive.html">归档</a></li>
+              <li><a href="/categories.html">目录</a></li>
+              <li><a href="/pages.html">页面</a></li>
+              <li><a href="/tags.html">标签</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+<div class="page-header">
+  <h1>webkit自定义滚动条 </h1>
+</div>
+
+
+<div class="row">
+  <div class="span8">
+    <p>webkit支持自定义滚动条, 用图片或者样式的方式</p>
+
+<p>参考: <a href='http://almaer.com/scrollbar/index.html'>http://almaer.com/scrollbar/index.html</a></p>
+
+<p>参考地址中没有设置html头,<br />由于我设置的是<code>&lt;!DOCTYPE HTML&gt;</code>使用示例中的<code>css</code>会出现滚动条不饱满的状态.<br />于是我将滚动条用样式的方式画的, 而不是图片方式展示的, 以下是我修改后的代码. <pre class='prettyprint linenums lang-css'>
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+::-webkit-scrollbar-button:start:decrement, ::-webkit-scrollbar-button:end:increment {
+    display: block;
+}
+::-webkit-scrollbar-button:vertical:start:increment,
+::-webkit-scrollbar-button:vertical:end:decrement {
+    display: none;
+}
+::-webkit-scrollbar-button:end:increment {
+    background-image: url(/assets/themes/images/scroll_cntrl_dwn.png);
+}
+::-webkit-scrollbar-button:start:decrement {
+    background-image: url(/assets/themes/images/scroll_cntrl_up.png);
+}
+::-webkit-scrollbar-track-piece:vertical:start {
+    background-image: url(/assets/themes/images/scroll_gutter_top.png), url(/assets/themes/images/scroll_gutter_mid.png);
+    background-repeat: no-repeat, repeat-y;
+}
+::-webkit-scrollbar-track-piece:vertical:end {
+    background-image: url(/assets/themes/images/scroll_gutter_btm.png), url(/assets/themes/images/scroll_gutter_mid.png);
+    background-repeat: no-repeat, repeat-y;
+    background-position: bottom left, 0 0;
+}
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(160, 160, 160, 0.8); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5); 
+}
+</pre></p>
+    <hr>
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev"><a href="/python/2012/05/22/python-simple-http-server-file-upload" title="Python支持上传的SimpleHTTPServer">&larr; 上一篇</a></li>
+      
+        <li><a href="/archive.html">归档</a></li>
+      
+        <li class="next"><a href="/javascript/2012/05/24/javascript-format-date" title="javascript格式化时间">下一篇 &rarr;</a></li>
+      
+      </ul>
+    </div>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+  
+  <div class="span4">
+    <h4>发布日期</h4>
+    <div class="date"><span>2012-05-22</span></div>
+
+  
+    <h4>标签</h4>
+    <ul class="tag_box">
+    
+    
+
+
+  
+     
+    	<li><a href="/tags.html#css-ref">css <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#webkit-ref">webkit <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#html-ref">html <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#scroll-ref">scroll <span>1</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+
+  <section>
+    <h4>最近发表</h4>
+    <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/linux/2012/06/10/linux-subversion-install">linux 安装 svn 服务</a>
+      </li>
+    
+      <li class="post">
+        <a href="/python/2012/06/07/simple-python-web-bottle">微型 Python Web 框架 Bottle</a>
+      </li>
+    
+      <li class="post">
+        <a href="/windows/2012/05/26/windows-regedit-environment">windows 注册表 修改系统环境变量</a>
+      </li>
+    
+      <li class="post">
+        <a href="/linux/2012/05/25/ubuntu-static-ip-address">ubuntu设置静态ip</a>
+      </li>
+    
+      <li class="post">
+        <a href="/linux/2012/05/25/bash-key">让你提升命令行效率的 Bash 快捷键</a>
+      </li>
+    
+    </ul>
+  </section>
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; lai zhengfu 2012 
+          基于 <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          和 <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> 构建
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+

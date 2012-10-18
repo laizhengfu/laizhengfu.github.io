@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>博客首页</title>
+    <meta name="author" content="lai zhengfu">
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="http://lib.sinaapp.com/js/bootstrap/latest/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/google-code-prettify/prettify.css" rel="stylesheet" type="text/css" media="all">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/bootstrap/latest/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/google-code-prettify/prettify.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/js/application.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">博客首页</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/archive.html">归档</a></li>
+              <li><a href="/categories.html">目录</a></li>
+              <li><a href="/pages.html">页面</a></li>
+              <li><a href="/tags.html">标签</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+
+<div class="row">
+  <div class="span12">
+    
+
+
+<div class="subnav page-launcher">
+  <ul class="nav nav-pills">
+    <li><a href="#javascript20120522jekyll-bootstrap-code-highlighting" title="jekyll-bootstrap添加代码高亮">jekyll-bootstrap添加代码高亮</a></li>
+    <li><a href="#linux20120521tomcat-start-stop-script" title="linux tomcat 脚本">linux tomcat...</a></li>
+    <li><a href="#emacs20120521erlang-emacs-ide" title="erlang配置emacs开发">erlang配置emacs开发</a></li>
+    <li><a href="#python20120521bottle-web-learn" title="使用bottle搭建web">使用bottle搭建web</a></li>
+    <li><a href="#javascript20120518github-blog-jekyll-bootstrap" title="在github上搭建博客">在github上搭建博客</a></li>
+  </ul>
+</div>
+
+
+<div class="row">
+  <div class="span8">
+  
+  
+  <section id="javascript20120522jekyll-bootstrap-code-highlighting">
+    <article>
+      <header>
+      <h1><a href="/javascript/2012/05/22/jekyll-bootstrap-code-highlighting">jekyll-bootstrap添加代码高亮</a></h1>
+      <div class="date">lai zhengfu 发表于 <span>2012-05-22</span></div>
+    </header>
+    <div class="content"><p>jekyll-bootstarp是用<code>markdown</code>写博文的, 但是markdown默认不支持<code>pre</code>加class属性</p>
+
+<p>但是, 支持直接在<code>markdown</code>中写<code>html</code>代码, <a href='http://daringfireball.net/projects/markdown/syntax#html'>传送门</a></p>
+
+<p>修改<code>/includes/themes/twitter/default.html</code>, 添加几行代码</p>
+<pre class='prettyprint linenums'>
+&lt;link href="{\{ ASSET_PATH }\}/google-code-prettify/prettify.css" rel="stylesheet" type="text/css" media="all"&gt;
+&lt;script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="{\{ ASSET_PATH }\}/google-code-prettify/prettify.js"&gt;&lt;/script&gt;
+</pre>
+<p>其中上传了2个文件, 请对应放好相对应的目录下.</p>
+
+<p>再添加一段<code>js</code>, 让其生效, js代码如下</p>
+<pre class='prettyprint linenums'>
+!function ($) {
+    $(function(){
+        window.prettyPrint &amp;&amp; prettyPrint();
+    });
+}(window.jQuery);
+</pre>
+<p>写文章的时候而不是用markdown语法, 直接将要高亮的代码用<code>pre</code>标签包围</p>
+<pre class='prettyprint linenums'>
+&lt;pre class="prettyprint linenums"&gt;
+    &lt;!-- 包围其中 --&gt;
+&lt;/pre&gt;
+</pre></div>
+    </article>
+  </section>
+  
+  
+  <section id="linux20120521tomcat-start-stop-script">
+    <article>
+      <header>
+      <h1><a href="/linux/2012/05/21/tomcat-start-stop-script">linux tomcat 脚本</a></h1>
+      <div class="date">lai zhengfu 发表于 <span>2012-05-21</span></div>
+    </header>
+    <div class="content"><pre class='prettyprint linenums'>
+#!/bin/bash
+
+PID=`ps -ef | grep tomcat | grep java | grep ClassLoaderLogManager | grep -v grep | awk '{print $2}'`
+
+tomcat_log() {
+  tail -f $CATALINA_HOME/logs/catalina.out
+}
+
+tomcat_start() {
+  if [ -z $PID ]; then
+    echo "[start] start tomcat!"
+    $CATALINA_HOME/bin/startup.sh
+  else
+    echo "[start] tomcat is run!"
+  fi
+}
+
+tomcat_stop() {
+  if [ -n $PID ]; then
+    $CATALINA_HOME/bin/shutdown.sh
+  else
+    echo "[stop] tomcat is not run!"
+  fi
+}
+
+tomcat_kill() {
+  if [ -z $PID ]; then
+    echo "[kill] tomcat is not run!"
+  else
+    echo "[kill] kill tomcat!"
+    kill -9 $PID
+  fi
+}
+
+case $1 in
+  log)
+    tomcat_log
+  ;;
+  start)
+    tomcat_start
+  ;;
+  stop)
+    tomcat_stop
+  ;;
+  kill)
+    tomcat_kill
+  ;;
+  pid)
+    if [ -z $PID ]; then
+      echo "[pid] tomcat is not run!"
+    else
+      echo $PID
+    fi
+  ;;
+  *)
+    echo "default args is start!"
+    tomcat_start
+  ;;
+esac
+</pre></div>
+    </article>
+  </section>
+  
+  
+  <section id="emacs20120521erlang-emacs-ide">
+    <article>
+      <header>
+      <h1><a href="/emacs/2012/05/21/erlang-emacs-ide">erlang配置emacs开发</a></h1>
+      <div class="date">lai zhengfu 发表于 <span>2012-05-21</span></div>
+    </header>
+    <div class="content"><p>打开emacs配置文件, 输入配置文件</p>
+<pre class='prettyprint linenums lang-lisp'>
+(setq load-path (cons "*erlang安装目录*/lib/tools-*version*/emacs" load-path))
+(setq erlang-root-dir "*erlang安装目录*")
+(setq exec-path (cons "*erlang安装目录*/bin" exec-path))
+(require 'erlang-start)
+</pre>
+<p>用emacs打开任意一个<code>*.erl</code>源文件, 在菜单栏将会看到<code>Erlang</code>菜单选项.</p>
+
+<p>打开erlang终端<code>C-c C-z</code></p>
+
+<p>编译文件<code>C-c C-k</code></p></div>
+    </article>
+  </section>
+  
+  
+  <section id="python20120521bottle-web-learn">
+    <article>
+      <header>
+      <h1><a href="/python/2012/05/21/bottle-web-learn">使用bottle搭建web</a></h1>
+      <div class="date">lai zhengfu 发表于 <span>2012-05-21</span></div>
+    </header>
+    <div class="content"><h2 id='bottle'>安装bottle</h2>
+
+<p>访问bottle官网, <a href='http://bottlepy.org/'>http://bottlepy.org</a><br />github主页: <a href='https://github.com/defnull/bottle'>https://github.com/defnull/bottle</a><br />先在github上clone源码到本地进行安装</p>
+
+<pre><code># git clone https://github.com/defnull/bottle.git
+# cd bottle
+# python setup.py install</code></pre>
+
+<p>安装完后打开python终端测试是否安装成功</p>
+
+<pre><code>&gt;&gt;&gt; import bottle
+&gt;&gt;&gt; bottle.__version__
+&#39;0.10.9&#39;</code></pre>
+
+<p>能显示出版本号, 说明安装成功</p>
+
+<h2 id='bottle'>使用bottle进行开发</h2>
+
+<p>新建一个<code>demo.py</code>文件</p>
+<pre class='prettyprint linenums'>
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+from bottle import Bottle, run
+
+app = Bottle()
+
+@app.get("/")
+def get_index():
+    return "get index"
+
+@app.post("/")
+def post_index():
+    return "post index"
+
+run(app, host="localhost", port=9090)
+</pre>
+<p>终端执行<code>demo.py</code>文件后, 命令行测试运行效果如下</p>
+
+<pre><code># curl http://localhost:9090/
+get index
+
+# curl -d &quot;&quot; http://localhost:9090/
+post index</code></pre></div>
+    </article>
+  </section>
+  
+  
+  <section id="javascript20120518github-blog-jekyll-bootstrap">
+    <article>
+      <header>
+      <h1><a href="/javascript/2012/05/18/github-blog-jekyll-bootstrap">在github上搭建博客</a></h1>
+      <div class="date">lai zhengfu 发表于 <span>2012-05-18</span></div>
+    </header>
+    <div class="content"><h2 id='github'>注册github帐号</h2>
+
+<p>在github上注册帐号, 如果你的帐号为<code>heroin</code> 创建<code>heroin.github.com</code>这个项目.</p>
+
+<h2 id='jekyll'>安装jekyll</h2>
+
+<p>安装<code>jekyll</code>到github上, 这里我用的是 <a href='http://jekyllbootstrap.com/'>Jekyll-Bootstrap</a></p>
+
+<p>执行以下命令</p>
+
+<pre><code># git clone https://github.com/plusjade/jekyll-bootstrap.git heroin.github.com
+# cd heroin.github.com
+# git remote set-url origin git@github.com:heroin/heroin.github.com.git
+# git push origin master</code></pre>
+
+<p>然后直接访问<a href='http://heroin.github.com'>http://heroin.github.com</a>, 就能访问到你搭建的博客了.</p>
+
+<h2 id='jekyll'>配置jekyll</h2>
+
+<p>修改<code>_config.yml</code>文件</p>
+
+<p>将一些基础信息配置成想要的内容</p>
+
+<h4 id='id11'>配置首页</h4>
+
+<p>jekyllbootstrap默认的首页是<code>index.md</code></p>
+
+<p>但是如果需要分页效果的话需要使用的是<code>index.html</code>, 并且修改<code>_config.yml</code>, 添加一个配置项<code>paginate: 5</code></p>
+
+<p>详细的配置可以clone我的博客进行看<a href='https://github.com/heroin/heroin.github.com'>https://github.com/heroin/heroin.github.com</a></p>
+
+<h2 id='id12'>添加文章</h2>
+
+<p>在<code>_posts</code>目录下新建一个<code>markdown</code>(<code>*.md</code>)文件, 文件命名规范是<code>yyyy-mm-dd-url</code>, 例如该文章的文件为<code>2012-05-18-github-blog-jekyll-bootstrap.md</code></p>
+
+<p>得到的访问路径却是 <a href='/javascript/2012/05/18/github-blog-jekyll-bootstrap/'>/javascript/2012/05/18/github-blog-jekyll-bootstrap/</a><br />其中<code>/javascript</code>是在markdown文件中配置的.</p>
+
+<p>markdown文件头需要几个配置, 以下是该文章的头配置</p>
+<pre class='prettyprint linenums'>
+---
+layout: post
+title: 在github上搭建博客
+category: javascript
+tags: [github, bootstrap, jekyll, javascript]
+---
+</pre>
+<p>每个markdown必须在头部加上这段. 然后下面直接写markdown代码就行了.</p>
+
+<h2 id='id13'>配置域名</h2>
+
+<blockquote>
+<p>新建一个<code>CNAME</code>文件, 里面直接写上所配置的域名, 例如<code>heroin.so</code></p>
+</blockquote>
+
+<p>然后上域名提供商上配置域名解析, <code>A</code>记录到<code>207.97.227.245</code></p>
+
+<p>等待域名解析完毕即可, 直接访问<code>http://heroin.github.com</code> 会跳转至 <code>http://heroin.so</code></p></div>
+    </article>
+  </section>
+  
+  <div class="pagination">
+      <ul>
+        <li class="next"><a href='/page2'>&larr; 上一页</a></li>
+        <li><a href="/archive.html">归档</a></li>
+        <li class="prev"><a href='/page4'>下一页 &rarr;</a></li>
+      </ul>
+  </div>
+  </div>
+
+  <aside class="span4">
+
+    <section>
+    <h4>最近发表</h4>
+    <ul id="recent_posts">
+      <li class="post">
+        <a href="/linux/2012/06/10/linux-subversion-install">linux 安装 svn 服务</a>
+      </li>
+      <li class="post">
+        <a href="/python/2012/06/07/simple-python-web-bottle">微型 Python Web 框架 Bottle</a>
+      </li>
+      <li class="post">
+        <a href="/windows/2012/05/26/windows-regedit-environment">windows 注册表 修改系统环境变量</a>
+      </li>
+      <li class="post">
+        <a href="/linux/2012/05/25/ubuntu-static-ip-address">ubuntu设置静态ip</a>
+      </li>
+      <li class="post">
+        <a href="/linux/2012/05/25/bash-key">让你提升命令行效率的 Bash 快捷键</a>
+      </li>
+      <li class="post">
+        <a href="/crack/2012/05/24/sublime-text2-cracked">sublime text2 破解</a>
+      </li>
+      <li class="post">
+        <a href="/linux/2012/05/24/shell-count-code-number-rows">统计代码行数脚本</a>
+      </li>
+      <li class="post">
+        <a href="/javascript/2012/05/24/javascript-format-date">javascript格式化时间</a>
+      </li>
+      <li class="post">
+        <a href="/css/2012/05/22/webkit-custom-scroll">webkit自定义滚动条</a>
+      </li>
+      <li class="post">
+        <a href="/python/2012/05/22/python-simple-http-server-file-upload">Python支持上传的SimpleHTTPServer</a>
+      </li>
+    </ul>
+    </section>
+    
+  
+    <h4>分类</h4>
+    <ul class="tag_box">
+      
+      
+
+
+  
+     
+    	<li><a href="/categories.html#other-ref">
+    		other <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#ide-ref">
+    		ide <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#javascript-ref">
+    		javascript <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#python-ref">
+    		python <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#emacs-ref">
+    		emacs <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#linux-ref">
+    		linux <span>5</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#css-ref">
+    		css <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#crack-ref">
+    		crack <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#windows-ref">
+    		windows <span>1</span>
+    	</a></li>
+    
+  
+
+
+    </ul>
+  
+
+  </aside>
+</div>
+
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; lai zhengfu 2012 
+          基于 <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          和 <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> 构建
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+

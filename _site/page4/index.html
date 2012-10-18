@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>博客首页</title>
+    <meta name="author" content="lai zhengfu">
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="http://lib.sinaapp.com/js/bootstrap/latest/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+    <link href="/assets/themes/twitter/google-code-prettify/prettify.css" rel="stylesheet" type="text/css" media="all">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/bootstrap/latest/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/google-code-prettify/prettify.js"></script>
+    <script type="text/javascript" src="/assets/themes/twitter/js/application.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="100">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">博客首页</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+
+
+              <li><a href="/archive.html">归档</a></li>
+              <li><a href="/categories.html">目录</a></li>
+              <li><a href="/pages.html">页面</a></li>
+              <li><a href="/tags.html">标签</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        
+
+
+<div class="row">
+  <div class="span12">
+    
+
+
+<div class="subnav page-launcher">
+  <ul class="nav nav-pills">
+    <li><a href="#ide20120518adobe-brackets-install" title="Adobe Brackets 安装体验">Adobe Brackets...</a></li>
+    <li><a href="#other20120517goole-hosts" title="google hosts">google hosts...</a></li>
+    <li><a href="#other20120402heart" title="Heart">Heart</a></li>
+  </ul>
+</div>
+
+
+<div class="row">
+  <div class="span8">
+  
+  
+  <section id="ide20120518adobe-brackets-install">
+    <article>
+      <header>
+      <h1><a href="/ide/2012/05/18/adobe-brackets-install">Adobe Brackets 安装体验</a></h1>
+      <div class="date">lai zhengfu 发表于 <span>2012-05-18</span></div>
+    </header>
+    <div class="content"><p>Brackets 是 Adobe 的开源 <code>HTML/CSS/JavaScript</code> 集成开发环境. Brackets 提供 Windows 和 OS X 平台支持.</p>
+
+<p>要想试用先<code>clone</code>以下几个项目</p>
+
+<p><a href='https://github.com/adobe/brackets'>https://github.com/adobe/brackets</a><br />brackets 执行文件(<code>win/mac</code>)<br /><a href='https://github.com/adobe/brackets-app'>https://github.com/adobe/brackets-app</a></p>
+
+<p>brackets 所依赖的js库<br /><a href='https://github.com/jblas/path-utils'>https://github.com/jblas/path-utils</a><br /><a href='https://github.com/adobe/CodeMirror2'>https://github.com/adobe/CodeMirror2</a><br /><a href='https://github.com/laktek/jQuery-Smart-Auto-Complete'>https://github.com/laktek/jQuery-Smart-Auto-Complete</a><br /><a href='https://github.com/douglascrockford/JSLinthttps://github.com/laktek/jQuery-Smart-Auto-Complete'>https://github.com/douglascrockford/JSLint</a></p>
+
+<pre><code># git clone git://github.com/adobe/brackets.git
+# git clone git://github.com/adobe/brackets-app.git
+
+# git clone git://github.com/jblas/path-utils.git
+# git clone git://github.com/adobe/CodeMirror2.git
+# git clone git://github.com/douglascrockford/JSLint.git
+# git clone git://github.com/laktek/jQuery-Smart-Auto-Complete.git</code></pre>
+
+<p><img alt='' src='/assets/blog/adobe-brackets-install/dir.png' /></p>
+
+<h4 id='id9'>安装步骤</h4>
+
+<blockquote>
+<p>将<code>brackets</code>内全部文件移动到<code>brackets-app/brackets</code><br />将<code>CodeMirror2</code>内全部文件移动到<code>brackets-app/brackets/src/thirdparty/CodeMirror2</code><br />将<code>path-utils</code>内全部文件移动到<code>brackets-app/brackets/src/thirdparty/path-utils</code><br />将<code>jQuery-Smart-Auto-Complete</code>内全部文件移动到<code>brackets-app/brackets/src/thirdparty/smart-auto-complete</code><br />将<code>JSLint</code>内全部文件移动到<code>brackets-app/brackets/src/thirdparty/jslint</code></p>
+</blockquote>
+
+<pre><code># cp -R brackets/* brackets-app/brackets/
+# cp -R CodeMirror2/* brackets-app/brackets/src/thirdparty/CodeMirror2/
+# cp -R jQuery-Smart-Auto-Complete/* brackets-app/brackets/src/thirdparty/smart-auto-complete/
+# cp -R JSLint/* brackets-app/brackets/src/thirdparty/jslint/
+# cp -R path-utils/* brackets-app/brackets/src/thirdparty/path-utils/</code></pre>
+
+<p>移动完后直接运行<code>brackets-app/win/bin/Brackets.exe</code>即可打开, 效果图如下:<br /><img alt='' src='/assets/blog/adobe-brackets-install/show.png' /></p>
+
+<h4 id='id10'>精简步骤</h4>
+
+<p><em>windows测试没问题, 应该也兼容于mac</em><br />在原有安装好的基础下, 将<code>brackets-app/bin/win</code>下全部文件, 复制到<code>brackets-app/brackets/bin</code>目录下.<br />然后将<code>brackets-app/brackets</code>目录单独拷贝出来, 直接打开<code>brackets/bin/Brackets.exe</code>即可运行.</p>
+
+<pre><code># mkdir brackets-app/brackets/bin
+# cp -R brackets-app/bin/win/* brackets-app/brackets/bin/</code></pre></div>
+    </article>
+  </section>
+  
+  
+  <section id="other20120517goole-hosts">
+    <article>
+      <header>
+      <h1><a href="/other/2012/05/17/goole-hosts">google hosts</a></h1>
+      <div class="date">lai zhengfu 发表于 <span>2012-05-17</span></div>
+    </header>
+    <div class="content"><table class='table table-bordered table-striped'>
+  <tr><td>203.208.46.1</td><td>ssl.gstatic.com</td></tr>
+  <tr><td>203.208.46.1</td><td>gg.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>sandbox.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>safebrowsing-cache.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>newsfeed-dot-latest-dot-rovio-ad-engine.appspot.com</td></tr>
+  <tr><td>203.208.46.1</td><td>images-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>images-pos-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>images-lso-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>a-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>project-slingshot-gp.appspot.com</td></tr>
+  <tr><td>203.208.46.1</td><td>oauth.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>ct-google.crimecitygame.com</td></tr>
+  <tr><td>203.208.46.1</td><td>toolbarqueries.clients.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>browsersync.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>www-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>toolbarqueries.google.com.hk</td></tr>
+  <tr><td>203.208.46.1</td><td>www-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>ssl.google-analytics.com</td></tr>
+  <tr><td>203.208.46.1</td><td>r2303.latest.project-slingshot-hr.appspot.com</td></tr>
+  <tr><td>203.208.46.1</td><td>r3138-dot-latest-dot-project-slingshot-gp.appspot.com</td></tr>
+  <tr><td>203.208.46.1</td><td>r3115-dot-latest-dot-project-slingshot-gp.appspot.com</td></tr>
+  <tr><td>203.208.46.1</td><td>r3232-dot-latest-dot-project-slingshot-gp.appspot.com</td></tr>
+  <tr><td>203.208.46.1</td><td>r3269-dot-latest-dot-project-slingshot-gp.appspot.com</td></tr>
+  <tr><td>203.208.46.1</td><td>bt26mravu2qpe56n8gnmjnpv2inl84bf-a-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>8kubpeu8314p2efdd7jlv09an9i2ljdo-a-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>adstvca8k2ooaknjjmv89j22n9t676ve-a-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>ob7f2qc0i50kbjnc81vkhgmb5hsv7a8l-a-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>53rd6p0catml6vat6qra84rs0del836d-a-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>u807isd5egseeabjccgcns005p2miucq-a-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>r70rmsn4s0rhk6cehcbbcbfbs31pu0va-a-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>59cbv4l9s05pbaks9v77vc3mengeqors-a-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>i8brh95qor6r54nkl52hidj2ggcs4jgm-a-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>upt14k1i2veesusrda9nfotcrbp9d7p5-a-oz-opensocial.googleusercontent.com</td></tr>
+  <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+  <tr><td>203.208.46.1</td><td>google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>google.hk</td></tr>
+  <tr><td>203.208.46.1</td><td>www.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>www.gstatic.com</td></tr>
+  <tr><td>203.208.46.1</td><td>dl-ssl.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>maps.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>mail.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>code.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>docs.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>apis.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>sites.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>groups.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>www.googleapis.com</td></tr>
+  <tr><td>203.208.46.1</td><td>ajax.googleapis.com</td></tr>
+  <tr><td>203.208.46.1</td><td>appspot.com</td></tr>
+  <tr><td>203.208.46.1</td><td>www.appspot.com</td></tr>
+  <tr><td>203.208.46.1</td><td>www.googlevideo.com</td></tr>
+  <tr><td>203.208.46.1</td><td>www.blogger.com</td></tr>
+  <tr><td>203.208.46.1</td><td>www.google.com.hk</td></tr>
+  <tr><td>203.208.46.1</td><td>translate.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>wenda.google.com.hk</td></tr>
+  <tr><td>203.208.46.1</td><td>maps.gstatic.com</td></tr>
+  <tr><td>203.208.46.1</td><td>webcache.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>googlecode.l.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>mail-attachment.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>maps-api-ssl.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>code-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>images1-focus-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>images2-focus-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>images3-focus-opensocial.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>encrypted.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>chrome.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>profiles.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>plus.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>plusone.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>talkgadget.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>chatenabled.mail.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>picasaweb.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients1.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients2.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients3.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients4.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients5.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients6.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients7.google.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients1.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients2.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients3.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients4.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients5.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients6.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>clients7.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>lh1.ggpht.com</td></tr>
+  <tr><td>203.208.46.1</td><td>lh2.ggpht.com</td></tr>
+  <tr><td>203.208.46.1</td><td>lh3.ggpht.com</td></tr>
+  <tr><td>203.208.46.1</td><td>lh4.ggpht.com</td></tr>
+  <tr><td>203.208.46.1</td><td>lh5.ggpht.com</td></tr>
+  <tr><td>203.208.46.1</td><td>lh6.ggpht.com</td></tr>
+  <tr><td>203.208.46.1</td><td>lh6.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>lh5.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>lh4.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>lh3.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>lh2.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>lh1.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>s2.googleusercontent.com</td></tr>
+  <tr><td>203.208.46.1</td><td>spreadsheets.google.com</td></tr>
+  <tr><td>203.208.46.133</td><td>mt0.google.com</td></tr>
+  <tr><td>203.208.46.134</td><td>mt1.google.com</td></tr>
+  <tr><td>203.208.46.135</td><td>khm1.google.com</td></tr>
+  <tr><td>203.208.46.136</td><td>khm0.google.com</td></tr>
+</table></div>
+    </article>
+  </section>
+  
+  
+  <section id="other20120402heart">
+    <article>
+      <header>
+      <h1><a href="/other/2012/04/02/heart">Heart</a></h1>
+      <div class="date">lai zhengfu 发表于 <span>2012-04-02</span></div>
+    </header>
+    <div class="content"><pre><code>99669999996669999996699666699666999966699666699
+99699999999699999999699666699669966996699666699
+99669999999999999996699666699699666699699666699
+99666699999999999966666999966699666699699666699
+99666666999999996666666699666699666699699666699
+99666666669999666666666699666669966996699666699
+99666666666996666666666699666666999966669999996</code></pre></div>
+    </article>
+  </section>
+  
+  <div class="pagination">
+      <ul>
+        <li class="next"><a href='/page3'>&larr; 上一页</a></li>
+        <li><a href="/archive.html">归档</a></li>
+      </ul>
+  </div>
+  </div>
+
+  <aside class="span4">
+
+    <section>
+    <h4>最近发表</h4>
+    <ul id="recent_posts">
+      <li class="post">
+        <a href="/linux/2012/06/10/linux-subversion-install">linux 安装 svn 服务</a>
+      </li>
+      <li class="post">
+        <a href="/python/2012/06/07/simple-python-web-bottle">微型 Python Web 框架 Bottle</a>
+      </li>
+      <li class="post">
+        <a href="/windows/2012/05/26/windows-regedit-environment">windows 注册表 修改系统环境变量</a>
+      </li>
+      <li class="post">
+        <a href="/linux/2012/05/25/ubuntu-static-ip-address">ubuntu设置静态ip</a>
+      </li>
+      <li class="post">
+        <a href="/linux/2012/05/25/bash-key">让你提升命令行效率的 Bash 快捷键</a>
+      </li>
+      <li class="post">
+        <a href="/crack/2012/05/24/sublime-text2-cracked">sublime text2 破解</a>
+      </li>
+      <li class="post">
+        <a href="/linux/2012/05/24/shell-count-code-number-rows">统计代码行数脚本</a>
+      </li>
+      <li class="post">
+        <a href="/javascript/2012/05/24/javascript-format-date">javascript格式化时间</a>
+      </li>
+      <li class="post">
+        <a href="/css/2012/05/22/webkit-custom-scroll">webkit自定义滚动条</a>
+      </li>
+      <li class="post">
+        <a href="/python/2012/05/22/python-simple-http-server-file-upload">Python支持上传的SimpleHTTPServer</a>
+      </li>
+    </ul>
+    </section>
+    
+  
+    <h4>分类</h4>
+    <ul class="tag_box">
+      
+      
+
+
+  
+     
+    	<li><a href="/categories.html#other-ref">
+    		other <span>2</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#ide-ref">
+    		ide <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#javascript-ref">
+    		javascript <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#python-ref">
+    		python <span>3</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#emacs-ref">
+    		emacs <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#linux-ref">
+    		linux <span>5</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#css-ref">
+    		css <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#crack-ref">
+    		crack <span>1</span>
+    	</a></li>
+     
+    	<li><a href="/categories.html#windows-ref">
+    		windows <span>1</span>
+    	</a></li>
+    
+  
+
+
+    </ul>
+  
+
+  </aside>
+</div>
+
+  </div>
+</div>
+
+
+      </div>
+
+      <footer>
+        <p>&copy; lai zhengfu 2012 
+          基于 <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          和 <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a> 构建
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+  </body>
+</html>
+

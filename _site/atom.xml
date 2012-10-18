@@ -1,0 +1,1709 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>博客首页</title>
+ <link href="http://lzf0514.github.com/atom.xml" rel="self"/>
+ <link href="http://lzf0514.github.com"/>
+ <updated>2012-10-18T19:02:16+08:00</updated>
+ <id>http://lzf0514.github.com</id>
+ <author>
+   <name>lai zhengfu</name>
+   <email>laizhengfu@163.com</email>
+ </author>
+
+ 
+ <entry>
+   <title>linux 安装 svn 服务</title>
+   <link href="http://lzf0514.github.com/linux/2012/06/10/linux-subversion-install"/>
+   <updated>2012-06-10T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/linux/2012/06/10/linux-subversion-install</id>
+   <content type="html">&lt;h2 id='subversion'&gt;安装subversion&lt;/h2&gt;
+
+&lt;p&gt;linux下直接输入命令安装subversion&lt;/p&gt;
+
+&lt;p&gt;debian&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;apt-get install subversion&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;redhat&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;yum install subversion&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id='svn'&gt;创建svn库&lt;/h2&gt;
+
+&lt;p&gt;安装完subversion后使用&lt;code&gt;svnadmin&lt;/code&gt;创建一个库&lt;/p&gt;
+
+&lt;p&gt;例如&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;svnadmin create /var/svn/repo&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;创建完毕后会生成几个目录&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;conf&lt;/li&gt;
+
+&lt;li&gt;db&lt;/li&gt;
+
+&lt;li&gt;hooks&lt;/li&gt;
+
+&lt;li&gt;locks&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;还会创建2个文件&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;README.txt&lt;/li&gt;
+
+&lt;li&gt;format&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id='svn'&gt;配置svn&lt;/h2&gt;
+
+&lt;p&gt;主要是修改&lt;code&gt;conf&lt;/code&gt;下的几个配置文件&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;authz&lt;/li&gt;
+
+&lt;li&gt;passwd&lt;/li&gt;
+
+&lt;li&gt;svnserve.conf&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table class='table table-bordered table-striped'&gt;
+  &lt;tr&gt;&lt;td&gt;authz&lt;/td&gt;&lt;td&gt;目录访问权限配置&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;passwd&lt;/td&gt;&lt;td&gt;帐号配置&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;svnserve.conf&lt;/td&gt;&lt;td&gt;基础配置, 指向用那些配置文件等&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;h3 id='passwd'&gt;修改passwd&lt;/h3&gt;
+
+&lt;p&gt;passwd中的帐号是&lt;code&gt;帐号=密码&lt;/code&gt;的方式存储, 直接写入就行&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[users]
+admin = admin&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id='authz'&gt;修改authz&lt;/h3&gt;
+
+&lt;p&gt;authz下主要是3种节点&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;aliases 配置别名, 这个不配置留空就行&lt;/li&gt;
+
+&lt;li&gt;groups 配置组, 也可以不用配置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;[aliases]
+
+[groups]
+system = admin
+
+[/]
+@system = rw
+
+[repos:/]
+admin = rw&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中直接写的是代表配置的是帐号的权限, 带&lt;code&gt;@&lt;/code&gt;代表的是配置组的权限&lt;/p&gt;
+
+&lt;p&gt;目录的配置还有更灵活的方式配置, 可以不用写的那么的死&lt;/p&gt;
+
+&lt;h3 id='svnserveconf'&gt;修改svnserve.conf&lt;/h3&gt;
+
+&lt;p&gt;直接贴上配置, 具体配置方式注释文档上写的很清楚, 以下是我的配置&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[general]
+anon-access = none
+auth-access = write
+password-db = passwd
+authz-db = authz
+
+[sasl]&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id='svn'&gt;启动svn服务&lt;/h3&gt;
+
+&lt;p&gt;配置完毕后直接启动就行了, 通过svn客户端就能直接访问的&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; svnserve -d -r /var/svn/repo/&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其中&lt;code&gt;svnserve&lt;/code&gt; 还有挺多个启动参数, 就不一一介绍了&lt;/p&gt;
+
+&lt;h3 id='svn'&gt;关闭svn服务&lt;/h3&gt;
+
+&lt;p&gt;直接kill掉&lt;code&gt;svnserve&lt;/code&gt;进程就行了&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;kill -9 `ps -ef | grep svnserve | grep -v grep | awk &amp;#39;{print $2}&amp;#39;`&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>微型 Python Web 框架 Bottle</title>
+   <link href="http://lzf0514.github.com/python/2012/06/07/simple-python-web-bottle"/>
+   <updated>2012-06-07T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/python/2012/06/07/simple-python-web-bottle</id>
+   <content type="html">&lt;p&gt;Bottle 是一个非常小巧但高效的微型 Python Web 框架, 它被设计为仅仅只有一个文件的Python模块, 并且除Python标准库外, 它不依赖于任何第三方模块.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;路由(Routing): 将请求映射到函数, 可以创建十分优雅的 URL&lt;/li&gt;
+
+&lt;li&gt;模板(Templates): Pythonic 并且快速的 Python 内置模板引擎, 同时还支持 mako, jinja2, cheetah 等第三方模板引擎&lt;/li&gt;
+
+&lt;li&gt;工具集(Utilites): 快速的读取 form 数据, 上传文件, 访问 cookies, headers 或者其它 HTTP 相关的 metadata&lt;/li&gt;
+
+&lt;li&gt;服务器(Server): 内置HTTP开发服务器, 并且支持 paste, fapws3, bjoern, Google App Engine, Cherrypy 或者其它任何 WSGI HTTP 服务器&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id='_bottle'&gt;安装 Bottle&lt;/h2&gt;
+
+&lt;p&gt;正如上面所说的, Bottle 被设计为仅仅只有一个文件, 我们甚至可以不安装它, 直接将 bottle.py 文件下载并复制到我们的应用中就可以使用了, 这是一个好办法, 但是如果还是想将其安装, 那么我们可以像安装其它的 Python 模块一样:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo easy_install -U bottle&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果我们直接将 bottle.py 下载到自己的应用中的话, 我们可以建立下面这样的目录结构:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;+ application
++----bottle.py
++----app.py&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我们可以将下面的创建 Bottle 实例的示例代码复制到 app.py 文件中, 运行该文件即可.&lt;/p&gt;
+
+&lt;h3 id='_bottle__hello_world_'&gt;示例: Bottle 的 &amp;#8220;Hello World&amp;#8221; 程序&lt;/h3&gt;
+
+&lt;p&gt;下面的代码我们创建了一个十分简单但是完整的 Bottle 应用程序(在Python Consle)中&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; from bottle import route, run
+&amp;gt;&amp;gt;&amp;gt; @route(&amp;#39;/hello/:name&amp;#39;)
+... def index(name = &amp;#39;World&amp;#39;):
+...     return &amp;#39;&amp;lt;strong&amp;gt;Hello {}!&amp;#39;.format(name)
+... 
+&amp;gt;&amp;gt;&amp;gt; run(host=&amp;#39;localhost&amp;#39;,port=8080)
+Bottle server starting up (using WSGIRefServer())...
+Listening on http://localhost:8080/
+Use Ctrl-C to quit.&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在 Python Consle中输入上面的代码, 我们就得到了一个最简单但完整的 Web 应用, 访问: &amp;#8220;http://localhost:8080/hello/bottle&amp;#8221; 试试. 上面到底发生了什么?&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;首先, 我们导入了两个 Bottle 的组件, route() Decorator 和 run() 函数&lt;/li&gt;
+
+&lt;li&gt;route() 可以将一个函数与一个URL进行绑定, 在上面的示例中, route 将 &amp;#8220;/hello/:name&amp;#8221; 这个URL地址绑定到了 &amp;#8220;index(name = &amp;#8216;World&amp;#8217;)&amp;#8221; 这个函数上&lt;/li&gt;
+
+&lt;li&gt;这个是一个关联到 &amp;#8220;/hello&amp;#8221; 的 handler function 或者 callback , 任何对 &amp;#8220;/hello&amp;#8221; 这个URL的请求都将被递交到这个函数中&lt;/li&gt;
+
+&lt;li&gt;我们获得请求后, index() 函数返回简单的字符串&lt;/li&gt;
+
+&lt;li&gt;最后, run() 函数启动服务器, 并且我们设置它在 &amp;#8220;localhost&amp;#8221; 和 8080 端口上运行&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;上面这种方法仅仅只是展示一下下 Bottle 的简单, 我们还可以像下面这样, 创建一个 Bottle 对象 app, 然后我们会将所有的函数都映射到 app 的 URL 地址上, 如上示例我们可以用下面这种办法来实现:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+from bottle import Bottle, run
+
+app = Bottle()
+
+@app.route('/hello')
+def hello():
+    return &quot;Hello World!&quot;
+
+run(app, host='localhost', port=8080)
+&lt;/pre&gt;
+&lt;p&gt;Bottle 的这种 URL 地址映射方法与我一直使用的 Flask 的地址映射方法很相似, 到现在为止, 我似乎只看到它们只是语法上面有些话不同.&lt;/p&gt;
+
+&lt;h2 id='request_routing'&gt;路由器(Request Routing)&lt;/h2&gt;
+
+&lt;p&gt;Bottle 应用会有一个 URL 路由器, 它将 URL 请求地址绑定到回调函数上, 每请求一些 URL, 其对应的 回调函数就会运行一些, 而回调函数返回值将被发送到浏览器, 你可以在你的应用中通过 route() 函数添加不限数目的路由器.&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import route
+
+@route('/')
+@route('/index.html')
+def index():
+    return '&amp;lt;a href=&quot;/hello&quot;&amp;gt;Go to Hello World Page&amp;lt;/a&amp;gt;'
+
+@route('/hello')
+def hello():
+    return 'Hello World'
+&lt;/pre&gt;
+&lt;p&gt;就像你看到, 你所发出的访问请求(URL), 应用并没有返回服务器上真实的文件, 而是返回与该URL绑定的函数的返回值, 如果其一个URL没有被绑定到任何回调函数上, 那么 Bottle 将返回&amp;#8221;404 Page Not Found&amp;#8221;的错误页面&lt;/p&gt;
+
+&lt;h3 id='dynamic_routes'&gt;动态路由(Dynamic Routes)&lt;/h3&gt;
+
+&lt;p&gt;Bottle 有自己特有的 URL 语法, 这让我们可以很轻松的在 URL 地址中加入通配符, 这样, 一个 route 将可以映射到无数的 URL 上, 这些动态的 路由常常被用来创建一些有规律性的内容页面的地址, 比如博客文章地址&amp;#8221;/archive/1234.html&amp;#8221;或者&amp;#8221;/wiki/Page_Title&amp;#8221;, 这在上面的示例我已经演示过了, 还记得吗?&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+@route('/hello/:name')
+def hello(name = 'World'):
+    return 'Hello {}!'.format(name)
+&lt;/pre&gt;
+&lt;p&gt;上面的路由器, 可以让我们通过&amp;#8221;/hello/abc&amp;#8221;或者&amp;#8221;/hello/heroin&amp;#8221;等地址来访问, 而 Bottle 返回的内容将是&amp;#8221;Hello abc!&amp;#8221; 或者 &amp;#8220;Hello heroin!&amp;#8221;, &amp;#8220;/hello/&amp;#8221;之后的字符串交被返回来, 默认的通配符将匹配所有下一个&amp;#8221;/&amp;#8221;出现之前的字符. 我们还可以对通配符进行格式化:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+@route('/object/:id#[0-9]+#')
+def view_object(id):
+    return 'Object ID: {}'.format(id)
+&lt;/pre&gt;
+&lt;p&gt;上面的路由将只允许 id 为由数字&amp;#8221;0-9&amp;#8221;组成的数字, 而其它的字符串都将返回 404 错误.&lt;/p&gt;
+
+&lt;h3 id='http_request_methods'&gt;HTTP 请求方法(Request Methods)&lt;/h3&gt;
+
+&lt;p&gt;HTTP 协议为不同的需求定义了许多不同的请求方法, 在 Bottle 中, GET方法将是所有未指明请求访问的路由会默认使用的方法, 这些未指明方法的路由都将只接收 GET 请求, 要处理如 POST, PUT 或者 DELETE 等等的其它请求, 你必须主动地在 route() 函数中添加 method 关键字, 或者使用下面这些 decorators:@get(), @post(), @put(), @delete().&lt;/p&gt;
+
+&lt;p&gt;POST 方法在经常被用来处理 HTML 的表单数据, 下面的示例演示了一个 登陆表单的处理过程:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import get, post, request
+
+#@route('/login')
+@get('/login')
+def login_form():
+    return '''&amp;lt;form method = &quot;POST&quot;&amp;gt;
+                &amp;lt;input name=&quot;name&quot; type=&quot;text&quot; /&amp;gt;
+                &amp;lt;input name=&quot;password&quot; type=&quot;password&quot; /&amp;gt;
+                &amp;lt;input type=&quot;submit&quot; value=&quot;Login&quot; /&amp;gt;
+                &amp;lt;/form&amp;gt;'''
+
+#@route('/login', method = 'POST')
+@post('/login')
+def login():
+    name = request.forms.get('name')
+    password = request.forms.get('password')
+    if check_login(name, password):
+        return '&amp;lt;p&amp;gt;Your login was correct&amp;lt;/p&amp;gt;'
+    else:
+        return '&amp;lt;p&amp;gt;Login failed&amp;lt;/p&amp;gt;'
+&lt;/pre&gt;
+&lt;p&gt;在上面的示例中, /login 被绑定到两个不同的回调函数上, 一个处理 GET 请求, 另一个处理 POST 请求, 第一个返我们的登陆表单, 第二个接收登陆表单提交的数据, 并进行处理, 得到结果后, 返回结果.&lt;/p&gt;
+
+&lt;h3 id='automatic_fallbacks'&gt;自动回退(Automatic Fallbacks)&lt;/h3&gt;
+
+&lt;p&gt;特殊的 HEAD 方法, 经常被用来处理一些仅仅只需要返回请求元信息而不需要返回整个请求结果的事务, 这些HEAD方法十分有用, 可以让我们仅仅只获得我们需要的数据, 而不必要返回整个文档, Bottle 可以帮助我们很简单的实现这些功能, 它会将这些请求映射到与URL绑定的回调函数中, 然后自动截取请求需要的数据, 这样一来, 你不再需要定义任何特殊的 HEAD 路由了.&lt;/p&gt;
+
+&lt;h2 id='routing_static_files'&gt;静态文件路由(Routing Static Files)&lt;/h2&gt;
+
+&lt;p&gt;对于静态文件, Bottle 内置的服务器并不会自动的进行处理, 这需要你自己定义一个路由, 告诉服务器在哪些文件是需要服务的, 并且在哪里可以找到它们, 我们可以写如下面这样的一个路由器:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import static_file
+
+@route('/static/:filename')
+def server_static(filename):
+    return static_file(filename, root='/path/to/your/static/files')
+&lt;/pre&gt;
+&lt;p&gt;static_file() 函数是一个安全且方便的用来返回静态文件请求的函数, 上面的示例中, 我们只返回&amp;#8221;/path/to/your/static/files&amp;#8221; 路径下的文件, 因为 :filename 通配符并不接受任何 &amp;#8221;/&amp;#8221; 的字符, 如果我们想要&amp;#8221;/path/to/your/static/files&amp;#8221; 目录的子目录下的文件也被处理, 那么我们可以使用一个格式化的通配符:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+@route('/static/:path#.+#')
+def server_static(path):
+    return static_file(path, root='/path/to/your/static/files')
+&lt;/pre&gt;
+&lt;h2 id='error_pages'&gt;错误页面(Error Pages)&lt;/h2&gt;
+
+&lt;p&gt;如果任何请求的URL没有的到匹配的回调函数, 那么 Bottle 都会返回错误页面, 你可以使用 error() decorator 来抓取 HTTP 状态, 并设置自己的相关回调函数, 比如下面我们的处理404错误的函数:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+@error(404)
+def error404(error):
+    return '404 error, nothing here, sorry!'
+&lt;/pre&gt;
+&lt;p&gt;这个时候, 404 文件未找到错误将被上面的自定义404错误处理方法代替, 传送给错误处理函数的唯一的一个参数是一个 HTTPError 实例, 它非常将普通的 request, 所以, 你也可以有 request 中读取到, 也可以写入 response 中, 并且返回任何 HTTPError 支持的数据类型.&lt;/p&gt;
+
+&lt;h2 id='generating_content'&gt;生成内容(Generating Content)&lt;/h2&gt;
+
+&lt;p&gt;在纯粹的 WSGI中, 你的应用能返回的数据类型是十分有限的, 你必须返回可迭代的字符串, 你能返回字符串是因为字符串是可以迭代的, 但是这导致服务器将你的内容按一字符一字符的传送, 这个时候, Unicode 字符将不允许被返回了, 这是肯定不行的.&lt;/p&gt;
+
+&lt;p&gt;Bottle 则支持了更多的数据类型, 它甚至添加了一个 Content-Length 头信息, 并且自动编码 Unicode 数据, 下面列举了 Bottle 应用中, 你可以返回的数据类型, 并且简单的介绍了一下这些数据类型的数据都是怎么被 Bottle 处理的:&lt;/p&gt;
+&lt;table class='table table-bordered table-striped'&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;数据类型&lt;/th&gt;&lt;th&gt;介绍&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;字典(Dictionaries)&lt;/td&gt;&lt;td&gt;Python 内置的字典类型数据将自动被转换为 JSON 字符串, 并且添加 Content-Type 为 ’application/json’ 的头信息返回至浏览器, 这让我们可以很方便的建立基于 JSON 的API&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;空字符串, False, None或者任何非真的数据&lt;/td&gt;&lt;td&gt;Bottle 将为这类数据创建 ContentLength 头文件, 被设置为 0 返回至浏览器&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Unicode 字符串&lt;/td&gt;&lt;td&gt;Unicode 字符串将自动的按 Content-Type 头文件中定义的编码格式进行编码(默认为UTF8), 接着按普通的字符串进行处理&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;字节串(Byte strings)&lt;/td&gt;&lt;td&gt;Bottle 返回整个字符串(而不是按字节一个一个返回), 同时增加 Content-Length 头文件标示字节串长度&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;HTTPError 与 HTTPResponse 实例&lt;/td&gt;&lt;td&gt;返回这些实例就像抛出异常一样, 对于 HTTPError, 错误将被与相关函数处理&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;文件对象&lt;/td&gt;&lt;td&gt;然后具有 .read() 方法的对象都被看作文件或者类似文件的对象进行处理, 并传送给 WSGI 服务器框架定义 wsgi.file_wrapper 回调函数, 某一些WSGI服务器会使用系统优化的请求方式(Sendfile)来发送文件. &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;迭代器与生成品&lt;/td&gt;&lt;td&gt;你可以在你的回调函数使用 yield 或者 返回一个迭代器, 只要yield的对象是字符串, Unicode 字符串, HTTPError 或者 HTTPResponse 对象就行, 但是不允许使用嵌套的迭代器, 需要注意的是, 当 yield 的值第一次为非空是,  HTTP 的状态 和 头文件将被发送到 浏览器&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;如果你返回一个 str 类子类的实例, 并且带有 read() 方法, 那它还是将按 字符串进行处理, 因为字符串有更高一级的优先处理权.&lt;/p&gt;
+
+&lt;h3 id='id17'&gt;改变默认编码&lt;/h3&gt;
+
+&lt;p&gt;Bottle 依照 Content-Type 头文件中 charset 参数来对字符串进行编码, 该头文件默认为 text/html; charset=UTF8 , 并且可以被 Response.content_type 属性修改, 或者直接被 Response.charset 属性修改:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import response
+
+@route('/iso')
+def get_iso():
+    response.charset = 'ISO-8859-15'
+    return u'This will be sent with ISO-8859-15 encoding.'
+@route('/latin9')
+def get_latin():
+    response.content_type = 'text/html; charset=latin9'
+    return u'ISO-8859-15 is also known as latin9.'
+&lt;/pre&gt;
+&lt;p&gt;由于某些罕见的原因, Python 编码的名称可能与 HTTP 编码的名称不一致, 这时你需要做两方法的工作首先设置 Response.content_type 头文件, 然后还需要设置 Response.charset.&lt;/p&gt;
+
+&lt;h3 id='id18'&gt;静态文件&lt;/h3&gt;
+
+&lt;p&gt;你可以直接返回文件, 但是 Bottle 推荐使用 static_file() 方法, 它会自动的猜测文件的 mime-type, 追加 Last-Modified 头文件, 完全的自定义需要服务的文件路径, 并且能处理错误(比如 404), 并且它还支持 If-Modified-Since 头文件并且可以返回 304 Not Modified 响应, 你还可以使用一个自定义的 mime-type 来重写 mime-type 猜测的值.&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import static_file
+
+@route('/images/:filename#.*\.png#')
+def send_image(filename):
+    return static_file(filename, root='/path/to/image/files', mimetype = 'image/png')
+@route('/static/:filename')
+def send_static(filename):
+    return static_file(filename, root='/path/to/static/files')
+&lt;/pre&gt;
+&lt;p&gt;如果你真的需要, 你还可以以异常的形式抛出文件.&lt;/p&gt;
+
+&lt;p&gt;强制下载&lt;/p&gt;
+
+&lt;p&gt;绝大多数浏览器在知道下载的文件的MIME类型并且该文件类型被绑定到某一个应用程序时(比如PDF文件), 它们都会自动的打开该文件, 如果你不想这样, 你可以强制的要求浏览器进行下载.&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+@route('/download/:filename')
+def download(filename):
+    return static_file(filename, root='/path/to/static/files', download=filename)
+&lt;/pre&gt;
+&lt;h3 id='http_'&gt;HTTP 错误与重定向&lt;/h3&gt;
+
+&lt;p&gt;abort() 函数是创建 HTTP 错误页面的快捷方式:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import route, abort
+
+@route('/restricted')
+def restricted():
+    abort(401, 'Sorry, access denied.')
+&lt;/pre&gt;
+&lt;p&gt;要将浏览器请求的地址重定向其它的地址, 你可以向浏览器发送一个 303 see other 响应, redirect() 可以实现这个功能:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import redirect
+
+@route('/wrong/url')
+def wrong():
+    redirect('/right/url')
+&lt;/pre&gt;
+&lt;p&gt;除了 HTTPResponse 或者 HTTPError 异常外, 还会有 500 Internal Server Error 响应.&lt;/p&gt;
+
+&lt;h3 id='response_'&gt;Response 实例&lt;/h3&gt;
+
+&lt;p&gt;响应的无数据如 HTTP 状态码, 响应头文件, 或者 Cookies 都被保存在一个叫做 response 的对象中, 并传送给浏览器, 你可以直接操作这些无数据或者写一些预定义的 helper 方法来处理它们.&lt;/p&gt;
+
+&lt;p&gt;状态码(Status Code) HTTP 状态码 控制着浏览器处理方式, 默认为&amp;#8221;200 OK&amp;#8221;, 绝大多数情况下, 你并不需要手工的去设置 Response.status , 但是使用 abort() 函数或者返回一个 HTTPResponse 对象的时候, 因为它们允许存在任何数值的状态码, 为了符合 HTTP 规范, 我们应该手动的为其添加规范的 HTTP 状态码.&lt;/p&gt;
+
+&lt;p&gt;响应头文件(Response Header) 响应的头文件如 Cache-Control 或者 Location 等都是通过 @Response.set_header() 函数定义的, 该函数接受两个参数:一个头文件名称和一个值, 名称部分是区分大小写的:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+@route('/wiki/page')
+def wiki(page):
+    response.set_header('Content-Language', 'en')
+    ...
+&lt;/pre&gt;
+&lt;p&gt;绝大多数头文件都仅仅只能定义一次, 但是有一些特别的头文件却可以多次定义, 这个时候我们在第一次定义时使用 Response.set_header() , 但是第二次定义时, 就需要使用 Response.add_header() 了:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+response.set_header('Set-Cookie','name=value')
+response.add_header('Set-Cookie','name1=value1')
+&lt;/pre&gt;
+&lt;h3 id='cookies'&gt;Cookies&lt;/h3&gt;
+
+&lt;p&gt;你可以使用 Request.get_cookie() 访问已经设置了的 Cookie, 可以使用 Response.set_cookie() 设置 Cookie:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+@route('/hello')
+def hello_again(self):
+    if request.get_cookie('visited'):
+        return 'Welcome back! Nice to see you again'
+    else:
+        response.set_cookie('visited','yes')
+        return 'Hello there! Nico to meet you!'
+&lt;/pre&gt;
+&lt;p&gt;Response.set_cookie() 方法接受一些特殊的参数, 用来控制 Cookie 的生命周期或者行为, 最常见的一些参数如下:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;max_age : 该 Cookie 最大的生命期(按秒计算, 默认为 None)&lt;/li&gt;
+
+&lt;li&gt;expires : 上个 datetime 对象或者一个 UNIX timestamp(默认为 None)&lt;/li&gt;
+
+&lt;li&gt;domain : 允许访问该 Cookie 的域名(默认为当前应用的域名)&lt;/li&gt;
+
+&lt;li&gt;path : 按照路径限制当前 Cookie(默认为 &amp;#8221;/&amp;#8221;)&lt;/li&gt;
+
+&lt;li&gt;secure : 限制当前Cookie仅仅允许通过 HTTPS 连接访问(默认为 off)&lt;/li&gt;
+
+&lt;li&gt;httponly : 阻止浏览器端 Javascript 读取当前 Cookie(默认为 off, 需要 Python 2.6 以上)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果 expires 或者 max_age 都没有设置的放在, Cookie 将在浏览器的会话结束后或者当浏览器关闭时失效, 这里还有一些问题是你在使用 Cookie 时需要考虑到的:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;大多数浏览器都限制 Cookie 的大小不能超过 4Kb&lt;/li&gt;
+
+&lt;li&gt;有一些用户设置了他们的浏览器不接受任何 Cookie, 绝大多数搜索引擎也直接忽略 Cookie, 你应该保证你的应用在没有 Cookie 时也是可用的&lt;/li&gt;
+
+&lt;li&gt;Cookie 保存在客户端, 并且没有任何加密措施, 你存放在 Cookie 中的任何内容, 用户都是可访问的, 如果有必要的话, 攻击者能通过 XSS 漏洞窃取用户的 Cookie, 所以, 尽可能在不要在 Cookie 中保存机密信息&lt;/li&gt;
+
+&lt;li&gt;Cookie 是很容易被伪造的, 所以, 尽可能不要想信 Cookie&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;就像上面看到的, Cookie 太容易被恶意软件盗取, 所以 Bottle 为 Cookie 提供的加密方法, 你所需要做的仅仅只是提供了一个密钥, 只要能确保该密钥的安全即可, 而其导致的结果是, 对于未加密的 Cookie, &lt;code&gt;Request.get_cookie()&lt;/code&gt; 将返回 None.&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+@route('/login')
+def login():
+    username = request.forms.get('username')
+    password = request.forms.get('password')
+    if check_user_credentials(username, password):
+        response.set_cookie('account', username, secret='some-sceret-key')
+        return 'Welcome {}'.format(username)
+
+@route('/restricted')
+def restricted_area(self):
+    username = request.get_cookie('account', secret='some-secret-key')
+    if username:
+        return 'Hello {}'.format(username)
+    else:
+        return 'You are not logged in.'
+&lt;/pre&gt;
+&lt;p&gt;另外, Bottle 会自动 pickle 与 unpickle 你存储到已签名的 Cookie 上的数据, 这表示你可以向 Cookie 中存储任何可以 pickle 的数据对象, 只要其大小不超过 4Kb即可.&lt;/p&gt;
+
+&lt;h4 id='accessing_request_data'&gt;访问请求数据(Accessing Request Data)&lt;/h4&gt;
+
+&lt;p&gt;Bottle 的全局对象 request 提供了对 HTTP相关的无数据如 Cookies, Headers, 或者 POST 表单数据的访问, 该对象在任何时候都保存着当前请求的数据, 只要其在一个路由的回调函数中访问即可, 它甚至还可以在多线程环境中工作.&lt;/p&gt;
+
+&lt;h3 id='http_'&gt;HTTP 头文件&lt;/h3&gt;
+
+&lt;p&gt;头文件信息都保存在 Request.header 中, 其成员是一个键区分大小写的 HeaderDict 实例:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import route, request
+
+@route('js_ajax')
+def is_ajax():
+    if request.header.get('X-Requested-With') == 'XMLHttpRequest':
+        return 'This is an AJAX request'
+    else:
+        return 'This is a normal request'
+&lt;/pre&gt;
+&lt;h3 id='cookies'&gt;Cookies&lt;/h3&gt;
+
+&lt;p&gt;Cookie 已一个普通的 dictionary 形式保存在 Request.COOKIES 对象中, Request.get_cookie()@ 方法可以对签名的 Cookie 进行访问, 下面示例展示了一个基于 Cookie 的访问计数器:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import route, request, response
+
+@route('/counter')
+def counter():
+    count = int( request.COOKIES.get('counter', '0'))
+    count += 1
+    response.set_cookie('counter',str(count))
+    return 'You visited this page {} times'.format(count)
+&lt;/pre&gt;
+&lt;h3 id='query_strings'&gt;查询字符串(Query Strings)&lt;/h3&gt;
+
+&lt;p&gt;查询字符串常常被用来传递一些小数目的键值对参数到服务器, 你可以使用 Request.GET 字典对其进行访问, 使用 Request.query_string 来获得整个字符串:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import route, request, response
+
+@route('/forum')
+def display_forum():
+    forum_id = request.GET.get('id')
+    page = request.GET.get('page','1')
+    return 'Forum ID: {} ( Page: {} )'.format(forum_id, page)
+&lt;/pre&gt;
+&lt;h3 id='post_'&gt;POST 表单数据与文件上传&lt;/h3&gt;
+
+&lt;p&gt;POST 与 PUT 请求中, request 可以包含各种编码方式的数据, 使用 Request.forms 对象可以访问普通的 POST 表单数据, 文件上传时提交的数据被单独以 cgi.FieldStorage 实例的形式存储在 Request.files 中, 而 Request.body 按原始数据的方式保存有一个文件对象的数据.&lt;/p&gt;
+
+&lt;p&gt;下面是一个文件上传的示例:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+&amp;lt;form action&quot;/upload&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&amp;gt;
+  &amp;lt;input type=&quot;text&quot; name=&quot;name&quot; /&amp;gt;
+  &amp;lt;input type=&quot;file&quot; name=&quot;data&quot; /&amp;gt;
+  &amp;lt;input type=&quot;submit&quot; value=&quot;Upload&quot; /&amp;gt;
+&amp;lt;/form&amp;gt;
+&lt;/pre&gt;
+&lt;p&gt;Bottle 代码&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import route, request
+
+@route('/upload', method = 'POST')
+def do_upload():
+    name = request.forms.get('name')
+    data = request.files.get('data')
+    if name and data.file:
+        raw = data.file.read() #当文件很大时, 这个操作将十分危险
+        filename = data.filename
+        return &quot;Hello {}! You uploaded {} ({} bytes).&quot;.format(name, filename, len(raw))
+    return &quot;You missed a field&quot;
+&lt;/pre&gt;
+&lt;h3 id='wsgi_'&gt;WSGI 环境&lt;/h3&gt;
+
+&lt;p&gt;Request 对象将 WSGI 环境数据都以 dictionary 等式保存在 Request.environ 中, 允许你像访问字典数据一样访问其值:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+route('/my_ip')
+def show_ip():
+    ip = request.environ.get('REMOTE_ADDR')
+    # 或者 ip = request.get('REMOTE_ADDR')
+    # 或者 ip = request['REMOTE_ADDR']
+    return 'Your IP is : {}'.format(ip)
+&lt;/pre&gt;
+&lt;h2 id='templates'&gt;模板(Templates)&lt;/h2&gt;
+
+&lt;p&gt;Bottle 内置了一个快速且强大的模板引擎, 叫作: *SimpleTemplate Engine* , 你可以使用 template() 函数 或者 view() decorator 来编译一个模板, 你所要作的仅仅只是提供该模板, 以及要传送给模板的数据, 下面是一个模板的简单示例:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+@route('/hello')
+@route('/hello/:name'):
+def hello(name = 'World')
+    return template('hello', name = name)
+&lt;/pre&gt;
+&lt;p&gt;上面的代码将载入 hello.tpl , 然后将 name 传送给该模板, 并编译它, 再将结果返回给浏览器, Bottle 将在 &lt;code&gt;./views/&lt;/code&gt; 或者 &lt;code&gt;bottle.TEMPLATE_PATH&lt;/code&gt; 设置的路径中搜索模板文件.&lt;/p&gt;
+
+&lt;p&gt;view() decorator 允许你返回一组需要传送给模板的数据字典即可, 而不需要再重新传送模板名称:&lt;/p&gt;
+
+&lt;h3 id='id19'&gt;模板语法&lt;/h3&gt;
+
+&lt;p&gt;模板语法是非常精巧的, 其工作原理基本可以说成是: 将模板文件中的代码进行正确的缩进处理, 以至你不再需要担心块缩进问题:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+%if name == 'World':
+    &amp;lt;h1&amp;gt; Hello  &amp;lt;/h1&amp;gt;
+    &amp;lt;p&amp;gt; This is a test.&amp;lt;/p&amp;gt;
+%else:
+    &amp;lt;h1&amp;gt;Hello &amp;lt;/h1&amp;gt;
+    &amp;lt;p&amp;gt;How are you?&amp;lt;/p&amp;gt;
+%end
+&lt;/pre&gt;
+&lt;h3 id='id20'&gt;缓存&lt;/h3&gt;
+
+&lt;p&gt;模板被编译之后会缓存至内存中, 你可以使用 bottle.TEMPLATES.clear() 去手工清除它们.&lt;/p&gt;
+
+&lt;h2 id='plugins'&gt;插件(Plugins)&lt;/h2&gt;
+
+&lt;p&gt;这是 Bottle 0.9 版本才有的新功能, 插件可以提供 Bottle 核心同有提供的功能集, 在&amp;#8221;可用的 Bottle 插件列表&amp;#8221;: &lt;a href='http://bottlepy.org/docs/dev/plugins/index.html'&gt;http://bottlepy.org/docs/dev/plugins/index.html&lt;/a&gt; 中你可以找到现在可用的插件, 你还可以开发自己的 Bottle 插件, 比如 sqlite 插件, 可以让你可以使用 db 来访问一个到SQLite 数据的链接:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import route, install, template
+from bottle_sqlite import SQLitePlugin
+
+install(SQLitePlugin(dbfile='/tmp/test.db'))
+&lt;/pre&gt;&lt;pre class='prettyprint linenums'&gt;
+@route('/show/:post_id')
+def show(db, post_id):
+    c = db.execute('SELECT title, content FROM posts WHERE id = ?', (int(post_id)))
+    row = c.fetchone() 
+    return template('show_post', title=row['title'], text=row['content'])
+
+@route('/contact')
+def contact_page():
+    '''该回调函数不需要任何数据库连接, 因为没有 db 关键字, 所以 SQLite插件将完全忽略该回调函数'''
+    return template('contact')
+&lt;/pre&gt;
+&lt;h3 id='id21'&gt;在整个应用中安装插件&lt;/h3&gt;
+
+&lt;p&gt;插件可以被安装到整个应用中, 或者仅仅只针对某几个路由安装, 绝大多数插件都被安装到整个应用中, 以为所有路由服务. 要安装一个插件, 只需要将插件的名称作为第一个参数传递给 install() 函数即可:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle_sqlite import SQLitePlugin
+
+install(SQLitePlugin(dbfile='/tmp/test.db'))
+&lt;/pre&gt;
+&lt;h3 id='id22'&gt;卸载已安装的插件&lt;/h3&gt;
+
+&lt;p&gt;你可以使用名称, 类或者对象来卸载一个已经安装的插件&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+sqlite_plugin = SQLitePlugin(dbfile='/tmp/test.db')
+install(sqlite_plugin)
+uninstall(sqlite_plugin) #卸载特定的插件
+uninstall(SQLitePlugin) #卸载该类的所的实例
+uninstall('sqlite') # 卸载所有具有该名称的插件
+uninstall(True) # 一次性卸载所有已安装的插件
+&lt;/pre&gt;
+&lt;p&gt;插件可以在任何时间安装与卸载, 甚至是处理某个请求的回调函数中, 每一次已经安装的插件树更新时, 路由缓存都会跟着更新.&lt;/p&gt;
+
+&lt;h3 id='id23'&gt;与路由绑定的插件安装&lt;/h3&gt;
+
+&lt;p&gt;route() 的 apply 参数可以指定某个回调函数要安装的插件:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+sqlite_plugin = SQLitePlugin(dbfile='/tmp/test.db')
+
+@route('/create', apply=[sqlite_plugin])
+def create(db):
+    db.execute('INSERT INTO ….')
+&lt;/pre&gt;
+&lt;h3 id='id24'&gt;插件黑名单&lt;/h3&gt;
+
+&lt;p&gt;如果可以使用 route() 方法中的 skip 参数指定插件黑名单, 如下:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+sqlite_plugin = SQLitePlugin(dbfile='/tmp/test.db')
+install sqlite_plugin)
+
+@route('/open/:db', skip=[sqlite_plugin])
+def open_db(db):
+    if db in ['test','test2']:
+        sqlite_plugin.dbfile = '/tmp/{}.db'.format(db)
+        return 'Database File Switched to : /tmp/{}.db'.format(db)
+    abort(404, 'No such database')
+&lt;/pre&gt;
+&lt;h3 id='id25'&gt;插件与子应用&lt;/h3&gt;
+
+&lt;p&gt;大多数插件都被安装到需要它的具体的应用中, 所以, 它们不应该影响注册给Bottle 应用的子应用:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+root = Bottle()
+root.mount(apps.blog, '/blog')
+@route.route('/contact', template='contact')
+def contact():
+    return {'email':'contact@example.com')
+root.install(plugins.WTForms())
+&lt;/pre&gt;
+&lt;p&gt;上面的示例代码中, 不管我们什么时候 mount 一个子应用到主应用上, 主应用都会为子应用设定一个代理, 所以上面的 WTForms 插件将只会影响到 &amp;#8216;/contact&amp;#8217; 路径, 但是不会影响到 &amp;#8216;/blog&amp;#8217; 子应用的所有URL, 但是这处理方式可以使用下面的方法覆盖:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+route.mount(apps.blog, '/blog', skip=None)
+&lt;/pre&gt;
+&lt;h2 id='development'&gt;开发(Development)&lt;/h2&gt;
+
+&lt;p&gt;上面已经介绍了一些基本的关于 Bottle 的知识, 如果你现在想使用 Bottle 开发自己的应用, 那么下面这些技巧对于你的项目来说可能很有帮助:&lt;/p&gt;
+
+&lt;h3 id='id26'&gt;默认应用&lt;/h3&gt;
+
+&lt;p&gt;Bottle 维护着一份 Bottle 实例的栈, 而 route() 其实是对 Bottle.route() 的快捷访问, 以这种方法产生的路由都属于默认应用:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+@route('/')
+def hello():
+    return 'Hello World'
+&lt;/pre&gt;
+&lt;p&gt;对于小应用来说, 这已经足够了, 但是随着应用的不断增大, 这种方法显然不容易维护, 所以我们可以使用子应用, 将整个项目的功能细分:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+blog = Bottle()
+@blog.route('/')
+def index():
+    return 'This is blog Index page'
+&lt;/pre&gt;
+&lt;p&gt;将应用分离之后, 程序的维护性提高了很多, 而且可重用性也提高很多, 其它的开发人员就可以放心的从你的模块中导入应用程序对象, 并使用 Bottle.mount() 将你的应用与他们的应用整全到一起. 另外一种替代方法, 你可以使用 应用栈 , 这让你可以在所有子应用中都使用默认的 route 方法:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+default_app.push()
+
+@route('/')
+def hello():
+    return 'Hello World'
+app = default_app.pop()
+&lt;/pre&gt;
+&lt;p&gt;app() 与 default_app() 都是 AppStack 的实例, 并且实现的类 Stack的API, 你可以 Push 或者 Pop应用到这个 stack 中.&lt;/p&gt;
+
+&lt;h3 id='debug_'&gt;Debug 模式&lt;/h3&gt;
+
+&lt;p&gt;在开发的前期, Debug 模式将非常有助于你的开发:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+bottle.debug(True)
+&lt;/pre&gt;
+&lt;p&gt;在这种模式下, Bottle 可以提供更多的 debugging 信息, 即使程序出现一个错误, 它同时还关闭了一些优化功能, 添加了一些配置的检测功能, 下面是该模式不完整的功能列表:&lt;/p&gt;
+
+&lt;p&gt;- 默认错误页面将返回一个对该错误的跟踪 - 模板不会被缓存 - 插件将立即被安装&lt;/p&gt;
+
+&lt;h3 id='id27'&gt;自动重载&lt;/h3&gt;
+
+&lt;p&gt;在开发的过程, 你可能需要经常修改你的代码, 又经常需要重启你的服务器以更新这些修改, Bottle 提供了一个自动重载的工具, 这使得你对任何一个应用中的文件的修改都会被及时的更新到运行中的应用中:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from bottle import run
+
+run(reloader=True)
+&lt;/pre&gt;
+&lt;p&gt;reloader 是这么工作的: 主进程并不会启动服务器, 但是它会按照同样的参数创建一个子进程, 这使得所有模块级的代码都会被运行两次. 子进程的运行环境中会有一个叫作 os.environ&lt;span&gt;&amp;#8216;BOTTLE_CHILD&amp;#8217;&lt;/span&gt; = True 的参数, 当任何一个已经加载的模块有修改时, 子进程会被停止, 然后由主进程重新开启新的子进程, 对模板的修改将不会引发一次重载.&lt;/p&gt;
+
+&lt;p&gt;重载是基于是否可以关闭子进程的, 如果你运行在 Windows 或者任何其它不支持 signal.SIGINT 的操作系统上时, @signal.SIGTERM@ 被用来终止子进程.&lt;/p&gt;
+
+&lt;h2 id='deployment'&gt;部属(Deployment)&lt;/h2&gt;
+
+&lt;p&gt;Bottle 默认是运行在内置的 wsgiref WSGIServer上的, 该无线程服务器对于开发来说再好不过了, 但是对于日渐壮大的应用或者对于实际部属来说, 并不是最好的选择.&lt;/p&gt;
+
+&lt;h3 id='id28'&gt;多线程服务器&lt;/h3&gt;
+
+&lt;p&gt;提高效率的最快速的办法, 就是将应用部属到一个多线程的服务器或者类似 Asynchronous WSGI 的服务器上, 比如 paste 或者 cherrypy , 并且告诉 Bottle 以这些服务器启动, 而不是自己内置的服务器.&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+bottle.run(server='paste')
+&lt;/pre&gt;
+&lt;p&gt;Bottle 支持很多服务器, 下面列举的并不是所有的:&lt;/p&gt;
+&lt;table class='table table-bordered table-striped'&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;名称&lt;/th&gt;&lt;th&gt;主页&lt;/th&gt;&lt;th&gt;介绍&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;cgi&lt;/td&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;以CGI脚本运行&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;flup&lt;/td&gt;&lt;td&gt;&lt;a href='http://trac.saddi.com/flup' target='_blank'&gt;http://trac.saddi.com/flup&lt;/a&gt;&lt;/td&gt;&lt;td&gt;以 FastCGI 进程运行&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;gae&lt;/td&gt;&lt;td&gt;&lt;a href='http://code.google.com/appengine/docs/python/overview.html' target='_blank'&gt;http://code.google.com/appengine/docs/python/overview.html&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Google App Engine 部属&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;wsgiref&lt;/td&gt;&lt;td&gt;&lt;a href='http://docs.python.org/library/wsgiref.html' target='_blank'&gt;http://docs.python.org/library/wsgiref.html&lt;/a&gt;&lt;/td&gt;&lt;td&gt;默认为单线程的服务器&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;cherrypy&lt;/td&gt;&lt;td&gt;&lt;a href='http://www.cherrypy.org/' target='_blank'&gt;http://www.cherrypy.org/&lt;/a&gt;&lt;/td&gt;&lt;td&gt;多线程服务器&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;paste&lt;/td&gt;&lt;td&gt;&lt;a href='http://pythonpaste.org/' target='_blank'&gt;http://pythonpaste.org/&lt;/a&gt;&lt;/td&gt;&lt;td&gt;多线程服务器&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;rocket&lt;/td&gt;&lt;td&gt;&lt;a href='http://pypi.python.org/pypi/rocket' target='_blank'&gt;http://pypi.python.org/pypi/rocket&lt;/a&gt;&lt;/td&gt;&lt;td&gt;多线程服务器&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;gunicorn&lt;/td&gt;&lt;td&gt;&lt;a href='http://pypi.python.org/pypi/gunicorn' target='_blank'&gt;http://pypi.python.org/pypi/gunicorn&lt;/a&gt;&lt;/td&gt;&lt;td&gt;部分用 C 编写&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;fapws3&lt;/td&gt;&lt;td&gt;&lt;a href='http://www.fapws.org/' target='_blank'&gt;http://www.fapws.org/&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Asynchronous, 基于C 开发&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;tornado&lt;/td&gt;&lt;td&gt;&lt;a href='http://www.tornadoweb.org/' target='_blank'&gt;http://www.tornadoweb.org/&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Asynchronous, 服务了部分 FaceBook 的服务&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;twisted&lt;/td&gt;&lt;td&gt;&lt;a href='http://twistedmatrix.com/' target='_blank'&gt;http://twistedmatrix.com/&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Asynchronous&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;diesel&lt;/td&gt;&lt;td&gt;&lt;a href='http://dieselweb.org/' target='_blank'&gt;http://dieselweb.org/&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Asynchronous, 基于 Greenlet&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;meinheld&lt;/td&gt;&lt;td&gt;&lt;a href='http://pypi.python.org/pypi/meinheld' target='_blank'&gt;http://pypi.python.org/pypi/meinheld&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Asynchronous, 部分基于 C 开发&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;bjoern&lt;/td&gt;&lt;td&gt;&lt;a href='http://pypi.python.org/pypi/bjoern' target='_blank'&gt;http://pypi.python.org/pypi/bjoern&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Asynchronous, 非常快, 基于C开发&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;auto&lt;/td&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;自动选择一个可用的 服务器&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;完整的服务器名称可使用 server_names 变量获得, 如果 Bottle 还没有提供你最喜欢的服务器, 那你可以手工的使用你的服务器启动它:&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+from paste import httpserver
+
+httpserver.serve(bottle.default_app(), host='0.0.0.0', port = 80)
+&lt;/pre&gt;
+&lt;h3 id='id29'&gt;多服务器进程&lt;/h3&gt;
+
+&lt;p&gt;一个 Python 进程只能使用到一个 CPU, 即时服务器硬件有多个CPU, 你可以在不同的端口中启动多个应用, 每一个应用使用一个 CPU, 然后使用分流服务器对访问进行分流, 比如 Apache mod_wsgi 或者 Nginx 等都可以作为前端分流服务器.&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>windows 注册表 修改系统环境变量</title>
+   <link href="http://lzf0514.github.com/windows/2012/05/26/windows-regedit-environment"/>
+   <updated>2012-05-26T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/windows/2012/05/26/windows-regedit-environment</id>
+   <content type="html">&lt;p&gt;公司电脑加了域之后, 无法直接修改&lt;code&gt;系统环境变量&lt;/code&gt;, 只能添加&lt;code&gt;用户环境变量&lt;/code&gt;的形式.&lt;/p&gt;
+
+&lt;p&gt;通过在注册表中苦苦寻找, 终于找到了.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;打开里面看到的是和系统环境变量一模一样的, 修改后发现能直接生效.&lt;/p&gt;
+
+&lt;p&gt;在&lt;code&gt;HKEY_LOCAL_MACHINE\SYSTEM\&lt;/code&gt;下, 除了发现有&lt;code&gt;CurrentControlSet&lt;/code&gt;这个键以外, 还发现另外2个键, &lt;code&gt;ControlSet001&lt;/code&gt;, &lt;code&gt;ControlSet002&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;这3个键下面的内容都一样, 当初我是修改&lt;code&gt;ControlSet001&lt;/code&gt;里面的配置, 当我若干天打开看的时候, 发现&lt;code&gt;CurrentControlSet&lt;/code&gt;和&lt;code&gt;ControlSet002&lt;/code&gt;下的系统环境变量都一样了.&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>ubuntu设置静态ip</title>
+   <link href="http://lzf0514.github.com/linux/2012/05/25/ubuntu-static-ip-address"/>
+   <updated>2012-05-25T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/linux/2012/05/25/ubuntu-static-ip-address</id>
+   <content type="html">&lt;p&gt;编辑&lt;code&gt;/etc/network/interfaces&lt;/code&gt;文件&lt;/p&gt;
+
+&lt;p&gt;默认的可能是&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;auto lo
+iface lo inet loopback&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;修改成&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+address 192.168.1.12
+netmask 255.255.255.0
+gateway 192.168.1.1&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;配置eth0, 将来需要用自动获取的时候可以直接将&lt;code&gt;static&lt;/code&gt;改成&lt;code&gt;dhcp&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;其他的用&lt;code&gt;#&lt;/code&gt;注释&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet dhcp
+#address 192.168.1.12
+#netmask 255.255.255.0
+#gateway 192.168.1.1&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;设置完毕后重启网卡即可&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/etc/init.d/networking restart&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>让你提升命令行效率的 Bash 快捷键</title>
+   <link href="http://lzf0514.github.com/linux/2012/05/25/bash-key"/>
+   <updated>2012-05-25T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/linux/2012/05/25/bash-key</id>
+   <content type="html">&lt;p&gt;生活在 Bash shell 中, 熟记以下快捷键, 将极大的提高你的命令行操作效率.&lt;/p&gt;
+
+&lt;h2 id='id14'&gt;编辑命令&lt;/h2&gt;
+&lt;table class='table table-bordered table-striped'&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + A&lt;/code&gt;&lt;/td&gt;&lt;td&gt;移到命令行首&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + E&lt;/code&gt;&lt;/td&gt;&lt;td&gt;移到命令行尾&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + F&lt;/code&gt;&lt;/td&gt;&lt;td&gt;按字符前移(右向)&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + B&lt;/code&gt;&lt;/td&gt;&lt;td&gt;按字符后移(左向)&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Alt + F&lt;/code&gt;&lt;/td&gt;&lt;td&gt;按单词前移(右向)&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Alt + B&lt;/code&gt;&lt;/td&gt;&lt;td&gt;按单词后移(左向)&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + XX&lt;/code&gt;&lt;/td&gt;&lt;td&gt;在命令行首和光标之间移动&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + U&lt;/code&gt;&lt;/td&gt;&lt;td&gt;从光标处删除至命令行首&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + K&lt;/code&gt;&lt;/td&gt;&lt;td&gt;从光标处删除至命令行尾&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + W&lt;/code&gt;&lt;/td&gt;&lt;td&gt;从光标处删除至字首&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Alt + D&lt;/code&gt;&lt;/td&gt;&lt;td&gt;从光标处删除至字尾&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + D&lt;/code&gt;&lt;/td&gt;&lt;td&gt;删除光标处的字符&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + H&lt;/code&gt;&lt;/td&gt;&lt;td&gt;删除光标前的字符&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + Y&lt;/code&gt;&lt;/td&gt;&lt;td&gt;粘贴至光标后&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Alt + C&lt;/code&gt;&lt;/td&gt;&lt;td&gt;从光标处更改为首字母大写的单词&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Alt + U&lt;/code&gt;&lt;/td&gt;&lt;td&gt;从光标处更改为全部大写的单词&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Alt + L&lt;/code&gt;&lt;/td&gt;&lt;td&gt;从光标处更改为全部小写的单词&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + T&lt;/code&gt;&lt;/td&gt;&lt;td&gt;交换光标处和之前的字符&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Alt + T&lt;/code&gt;&lt;/td&gt;&lt;td&gt;交换光标处和之前的单词&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Alt + Backspac&lt;/code&gt;&lt;/td&gt;&lt;td&gt;与 Ctrl + w 相同类似&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + Insert&lt;/code&gt;&lt;/td&gt;&lt;td&gt;复制&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Shift + Insert&lt;/code&gt;&lt;/td&gt;&lt;td&gt;粘贴&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;h2 id='id15'&gt;重新执行命令&lt;/h2&gt;
+&lt;table class='table table-bordered table-striped'&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + R&lt;/code&gt;&lt;/td&gt;&lt;td&gt;逆向搜索命令历史&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + G&lt;/code&gt;&lt;/td&gt;&lt;td&gt;从历史搜索模式退出&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + P&lt;/code&gt;&lt;/td&gt;&lt;td&gt;历史中的上一条命令&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + N&lt;/code&gt;&lt;/td&gt;&lt;td&gt;历史中的下一条命令&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Alt + .&lt;/code&gt;&lt;/td&gt;&lt;td&gt;使用上一条命令的最后一个参数&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;h2 id='id16'&gt;控制命令&lt;/h2&gt;
+&lt;table class='table table-bordered table-striped'&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + L&lt;/code&gt;&lt;/td&gt;&lt;td&gt;清屏&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + O&lt;/code&gt;&lt;/td&gt;&lt;td&gt;执行当前命令，并选择上一条命令&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + S&lt;/code&gt;&lt;/td&gt;&lt;td&gt;阻止屏幕输出&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + Q&lt;/code&gt;&lt;/td&gt;&lt;td&gt;允许屏幕输出&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + C&lt;/code&gt;&lt;/td&gt;&lt;td&gt;终止命令&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;Ctrl + Z&lt;/code&gt;&lt;/td&gt;&lt;td&gt;挂起命令&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;h2 id='bang__'&gt;Bang (!) 命令&lt;/h2&gt;
+&lt;table class='table table-bordered table-striped'&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;!!&lt;/code&gt;&lt;/td&gt;&lt;td&gt;执行上一条命令&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;!blah&lt;/code&gt;&lt;/td&gt;&lt;td&gt;执行最近的以 blah 开头的命令，如 !ls&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;!blah:p&lt;/code&gt;&lt;/td&gt;&lt;td&gt;仅打印输出，而不执行&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;!$&lt;/code&gt;&lt;/td&gt;&lt;td&gt;上一条命令的最后一个参数，与 Alt + . 相同&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;!$:p&lt;/code&gt;&lt;/td&gt;&lt;td&gt;打印输出 !$ 的内容&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;!*&lt;/code&gt;&lt;/td&gt;&lt;td&gt;上一条命令的所有参数&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;!*:p&lt;/code&gt;&lt;/td&gt;&lt;td&gt;打印输出 !* 的内容&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;^blah&lt;/code&gt;&lt;/td&gt;&lt;td&gt;删除上一条命令中的 blah&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;^blah^foo&lt;/code&gt;&lt;/td&gt;&lt;td&gt;将上一条命令中的 blah 替换为 foo&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;code&gt;^blah^foo^&lt;/code&gt;&lt;/td&gt;&lt;td&gt;将上一条命令中所有的 blah 都替换为 foo&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>sublime text2 破解</title>
+   <link href="http://lzf0514.github.com/crack/2012/05/24/sublime-text2-cracked"/>
+   <updated>2012-05-24T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/crack/2012/05/24/sublime-text2-cracked</id>
+   <content type="html">&lt;p&gt;打开sublime text2安装目录, 备份下&lt;code&gt;sublime_text.exe&lt;/code&gt;叫&lt;code&gt;sublime_text_carcked.exe&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;用&lt;code&gt;sublime text2&lt;/code&gt; 打开 &lt;code&gt;sublime_text_carcked.exe&lt;/code&gt;, 搜索&lt;code&gt;3342&lt;/code&gt; 然后改成 &lt;code&gt;3242&lt;/code&gt;, 保存后关闭.&lt;/p&gt;
+
+&lt;p&gt;运行&lt;code&gt;sublime_text_carcked.exe&lt;/code&gt;, 选择菜单&lt;code&gt;Help&lt;/code&gt;-&amp;gt;&lt;code&gt;Enter License&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;输入以下License&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;—–BEGIN LICENSE—–
+hiwanz
+Unlimited User License
+EA7E-26838
+5B320641E6E11F5C6E16553C438A6839
+72BA70FE439203367920D70E7DEB0E92
+436D756177BBE49EFC9FBBB3420DB9D3
+6AA8307E845B6AB8AF99D81734EEA961
+02402C853F1FFF9854D94799D1317F37
+1DAB52730F6CADDE701BF3BE03C34EF2
+85E053D2B5E16502F4B009DE413591DE
+0840D6E2CBF0A3049E2FAD940A53FF67
+—–END LICENSE—–&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;保存退出即可, 将来使用直接打开&lt;code&gt;sublime_text_carcked.exe&lt;/code&gt;就行.&lt;/p&gt;
+
+&lt;p&gt;正式版的版本, 请不要用sublime text本身修改sublime text 否则会把执行文件直接弄损坏&lt;/p&gt;
+
+&lt;p&gt;请使用任意一个带16进制编辑的工具修改, 注册方式一样&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>统计代码行数脚本</title>
+   <link href="http://lzf0514.github.com/linux/2012/05/24/shell-count-code-number-rows"/>
+   <updated>2012-05-24T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/linux/2012/05/24/shell-count-code-number-rows</id>
+   <content type="html">&lt;p&gt;执行以下代码&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+find . -name '*.java' -type f -exec cat {} \; | sed '/^$/d;/^[ ]*$/d;/.*#$/d' | wc -l
+&lt;/pre&gt;
+&lt;p&gt;其中&lt;code&gt;&amp;#39;*.java&amp;#39;&lt;/code&gt;可以换成其他语言的扩展名&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>javascript格式化时间</title>
+   <link href="http://lzf0514.github.com/javascript/2012/05/24/javascript-format-date"/>
+   <updated>2012-05-24T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/javascript/2012/05/24/javascript-format-date</id>
+   <content type="html">&lt;p&gt;在公共模块添加以下代码引用&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+Date.prototype.format = function(format) {
+
+    var o = {
+        &quot;M+&quot; :this.getMonth() + 1,
+        &quot;d+&quot; :this.getDate(),
+        &quot;h+&quot; :this.getHours(),
+        &quot;m+&quot; :this.getMinutes(),
+        &quot;s+&quot; :this.getSeconds(),
+        &quot;q+&quot; :Math.floor((this.getMonth() + 3) / 3),
+        &quot;S&quot; :this.getMilliseconds()
+    }
+
+    if (/(y+)/.test(format)) {
+        format = format.replace(RegExp.$1, (this.getFullYear() + &quot;&quot;)
+                .substr(4 - RegExp.$1.length));
+    }
+
+    for (var k in o) {
+        if (new RegExp(&quot;(&quot; + k + &quot;)&quot;).test(format)) {
+            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k]
+                    : (&quot;00&quot; + o[k]).substr((&quot;&quot; + o[k]).length));
+        }
+    }
+    return format;
+}
+&lt;/pre&gt;
+&lt;p&gt;调用的方式如下&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+var now = new Date().format(&quot;yyyy-MM-dd hh:mm:ss&quot;);
+&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>webkit自定义滚动条</title>
+   <link href="http://lzf0514.github.com/css/2012/05/22/webkit-custom-scroll"/>
+   <updated>2012-05-22T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/css/2012/05/22/webkit-custom-scroll</id>
+   <content type="html">&lt;p&gt;webkit支持自定义滚动条, 用图片或者样式的方式&lt;/p&gt;
+
+&lt;p&gt;参考: &lt;a href='http://almaer.com/scrollbar/index.html'&gt;http://almaer.com/scrollbar/index.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;参考地址中没有设置html头,&lt;br /&gt;由于我设置的是&lt;code&gt;&amp;lt;!DOCTYPE HTML&amp;gt;&lt;/code&gt;使用示例中的&lt;code&gt;css&lt;/code&gt;会出现滚动条不饱满的状态.&lt;br /&gt;于是我将滚动条用样式的方式画的, 而不是图片方式展示的, 以下是我修改后的代码. &lt;pre class='prettyprint linenums lang-css'&gt;
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+::-webkit-scrollbar-button:start:decrement, ::-webkit-scrollbar-button:end:increment {
+    display: block;
+}
+::-webkit-scrollbar-button:vertical:start:increment,
+::-webkit-scrollbar-button:vertical:end:decrement {
+    display: none;
+}
+::-webkit-scrollbar-button:end:increment {
+    background-image: url(/assets/themes/images/scroll_cntrl_dwn.png);
+}
+::-webkit-scrollbar-button:start:decrement {
+    background-image: url(/assets/themes/images/scroll_cntrl_up.png);
+}
+::-webkit-scrollbar-track-piece:vertical:start {
+    background-image: url(/assets/themes/images/scroll_gutter_top.png), url(/assets/themes/images/scroll_gutter_mid.png);
+    background-repeat: no-repeat, repeat-y;
+}
+::-webkit-scrollbar-track-piece:vertical:end {
+    background-image: url(/assets/themes/images/scroll_gutter_btm.png), url(/assets/themes/images/scroll_gutter_mid.png);
+    background-repeat: no-repeat, repeat-y;
+    background-position: bottom left, 0 0;
+}
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(160, 160, 160, 0.8); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5); 
+}
+&lt;/pre&gt;&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Python支持上传的SimpleHTTPServer</title>
+   <link href="http://lzf0514.github.com/python/2012/05/22/python-simple-http-server-file-upload"/>
+   <updated>2012-05-22T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/python/2012/05/22/python-simple-http-server-file-upload</id>
+   <content type="html">&lt;p&gt;在某个目录下运行, 访问&lt;a href='http://127.0.0.1:8000'&gt;http://127.0.0.1:8000&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;即可对该目录浏览, 或者上传文件.&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+&quot;&quot;&quot;Simple HTTP Server With Upload.
+
+This module builds on BaseHTTPServer by implementing the standard GET
+and HEAD requests in a fairly straightforward manner.
+
+&quot;&quot;&quot;
+
+
+__version__ = &quot;0.1&quot;
+
+import os
+import posixpath
+import BaseHTTPServer
+import urllib
+import cgi
+import shutil
+import mimetypes
+import re
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
+
+class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+
+    &quot;&quot;&quot;Simple HTTP request handler with GET/HEAD/POST commands.
+
+    This serves files from the current directory and any of its
+    subdirectories.  The MIME type for files is determined by
+    calling the .guess_type() method. And can reveive file uploaded
+    by client.
+
+    The GET/HEAD/POST requests are identical except that the HEAD
+    request omits the actual contents of the file.
+
+    &quot;&quot;&quot;
+
+    server_version = &quot;SimpleHTTPWithUpload/&quot; + __version__
+
+    def do_GET(self):
+        &quot;&quot;&quot;Serve a GET request.&quot;&quot;&quot;
+        f = self.send_head()
+        if f:
+            self.copyfile(f, self.wfile)
+            f.close()
+
+    def do_HEAD(self):
+        &quot;&quot;&quot;Serve a HEAD request.&quot;&quot;&quot;
+        f = self.send_head()
+        if f:
+            f.close()
+
+    def do_POST(self):
+        &quot;&quot;&quot;Serve a POST request.&quot;&quot;&quot;
+        r, info = self.deal_post_data()
+        print r, info, &quot;by: &quot;, self.client_address
+        f = StringIO()
+        f.write('&amp;lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 3.2 Final//EN&quot;&amp;gt;')
+        f.write(&quot;&amp;lt;html&amp;gt;\n&amp;lt;title&amp;gt;Upload Result Page&amp;lt;/title&amp;gt;\n&quot;)
+        f.write(&quot;&amp;lt;body&amp;gt;\n&amp;lt;h2&amp;gt;Upload Result Page&amp;lt;/h2&amp;gt;\n&quot;)
+        f.write(&quot;&amp;lt;hr&amp;gt;\n&quot;)
+        if r:
+            f.write(&quot;&amp;lt;strong&amp;gt;Success:&amp;lt;/strong&amp;gt;&quot;)
+        else:
+            f.write(&quot;&amp;lt;strong&amp;gt;Failed:&amp;lt;/strong&amp;gt;&quot;)
+        f.write(info)
+        f.write(&quot;&amp;lt;br&amp;gt;&amp;lt;a href=\&quot;%s\&quot;&amp;gt;back&amp;lt;/a&amp;gt;&quot; % self.headers['referer'])
+        f.write(&quot;&amp;lt;hr&amp;gt;&amp;lt;/body&amp;gt;\n&amp;lt;/html&amp;gt;\n&quot;)
+        length = f.tell()
+        f.seek(0)
+        self.send_response(200)
+        self.send_header(&quot;Content-type&quot;, &quot;text/html&quot;)
+        self.send_header(&quot;Content-Length&quot;, str(length))
+        self.end_headers()
+        if f:
+            self.copyfile(f, self.wfile)
+            f.close()
+        
+    def deal_post_data(self):
+        boundary = self.headers.plisttext.split(&quot;=&quot;)[1]
+        remainbytes = int(self.headers['content-length'])
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        if not boundary in line:
+            return (False, &quot;Content NOT begin with boundary&quot;)
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        fn = re.findall(r'Content-Disposition.*name=&quot;file&quot;; filename=&quot;(.*)&quot;', line)
+        if not fn:
+            return (False, &quot;Can't find out file name...&quot;)
+        path = self.translate_path(self.path)
+        fn = os.path.join(path, fn[0])
+        while os.path.exists(fn):
+            fn += &quot;_&quot;
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        try:
+            out = open(fn, 'wb')
+        except IOError:
+            return (False, &quot;Can't create file to write, do you have permission to write?&quot;)
+                
+        preline = self.rfile.readline()
+        remainbytes -= len(preline)
+        while remainbytes &amp;gt; 0:
+            line = self.rfile.readline()
+            remainbytes -= len(line)
+            if boundary in line:
+                preline = preline[0:-1]
+                if preline.endswith('\r'):
+                    preline = preline[0:-1]
+                out.write(preline)
+                out.close()
+                return (True, &quot;File '%s' upload success!&quot; % fn)
+            else:
+                out.write(preline)
+                preline = line
+        return (False, &quot;Unexpect Ends of data.&quot;)
+
+    def send_head(self):
+        &quot;&quot;&quot;Common code for GET and HEAD commands.
+
+        This sends the response code and MIME headers.
+
+        Return value is either a file object (which has to be copied
+        to the outputfile by the caller unless the command was HEAD,
+        and must be closed by the caller under all circumstances), or
+        None, in which case the caller has nothing further to do.
+
+        &quot;&quot;&quot;
+        path = self.translate_path(self.path)
+        f = None
+        if os.path.isdir(path):
+            if not self.path.endswith('/'):
+                # redirect browser - doing basically what apache does
+                self.send_response(301)
+                self.send_header(&quot;Location&quot;, self.path + &quot;/&quot;)
+                self.end_headers()
+                return None
+            for index in &quot;index.html&quot;, &quot;index.htm&quot;:
+                index = os.path.join(path, index)
+                if os.path.exists(index):
+                    path = index
+                    break
+            else:
+                return self.list_directory(path)
+        ctype = self.guess_type(path)
+        try:
+            # Always read in binary mode. Opening files in text mode may cause
+            # newline translations, making the actual size of the content
+            # transmitted *less* than the content-length!
+            f = open(path, 'rb')
+        except IOError:
+            self.send_error(404, &quot;File not found&quot;)
+            return None
+        self.send_response(200)
+        self.send_header(&quot;Content-type&quot;, ctype)
+        fs = os.fstat(f.fileno())
+        self.send_header(&quot;Content-Length&quot;, str(fs[6]))
+        self.send_header(&quot;Last-Modified&quot;, self.date_time_string(fs.st_mtime))
+        self.end_headers()
+        return f
+
+    def list_directory(self, path):
+        &quot;&quot;&quot;Helper to produce a directory listing (absent index.html).
+
+        Return value is either a file object, or None (indicating an
+        error).  In either case, the headers are sent, making the
+        interface the same as for send_head().
+
+        &quot;&quot;&quot;
+        try:
+            list = os.listdir(path)
+        except os.error:
+            self.send_error(404, &quot;No permission to list directory&quot;)
+            return None
+        list.sort(key=lambda a: a.lower())
+        f = StringIO()
+        displaypath = cgi.escape(urllib.unquote(self.path))
+        f.write('&amp;lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 3.2 Final//EN&quot;&amp;gt;')
+        f.write(&quot;&amp;lt;html&amp;gt;\n&amp;lt;title&amp;gt;Directory listing for %s&amp;lt;/title&amp;gt;\n&quot; % displaypath)
+        f.write(&quot;&amp;lt;body&amp;gt;\n&amp;lt;h2&amp;gt;Directory listing for %s&amp;lt;/h2&amp;gt;\n&quot; % displaypath)
+        f.write(&quot;&amp;lt;hr&amp;gt;\n&quot;)
+        f.write(&quot;&amp;lt;form ENCTYPE=\&quot;multipart/form-data\&quot; method=\&quot;post\&quot;&amp;gt;&quot;)
+        f.write(&quot;&amp;lt;input name=\&quot;file\&quot; type=\&quot;file\&quot;/&amp;gt;&quot;)
+        f.write(&quot;&amp;lt;input type=\&quot;submit\&quot; value=\&quot;upload\&quot;/&amp;gt;&amp;lt;/form&amp;gt;\n&quot;)
+        f.write(&quot;&amp;lt;hr&amp;gt;\n&amp;lt;ul&amp;gt;\n&quot;)
+        for name in list:
+            fullname = os.path.join(path, name)
+            displayname = linkname = name
+            # Append / for directories or @ for symbolic links
+            if os.path.isdir(fullname):
+                displayname = name + &quot;/&quot;
+                linkname = name + &quot;/&quot;
+            if os.path.islink(fullname):
+                displayname = name + &quot;@&quot;
+                # Note: a link to a directory displays with @ and links with /
+            f.write('&amp;lt;li&amp;gt;&amp;lt;a href=&quot;%s&quot;&amp;gt;%s&amp;lt;/a&amp;gt;\n'
+                    % (urllib.quote(linkname), cgi.escape(displayname)))
+        f.write(&quot;&amp;lt;/ul&amp;gt;\n&amp;lt;hr&amp;gt;\n&amp;lt;/body&amp;gt;\n&amp;lt;/html&amp;gt;\n&quot;)
+        length = f.tell()
+        f.seek(0)
+        self.send_response(200)
+        self.send_header(&quot;Content-type&quot;, &quot;text/html&quot;)
+        self.send_header(&quot;Content-Length&quot;, str(length))
+        self.end_headers()
+        return f
+
+    def translate_path(self, path):
+        &quot;&quot;&quot;Translate a /-separated PATH to the local filename syntax.
+
+        Components that mean special things to the local file system
+        (e.g. drive or directory names) are ignored.  (XXX They should
+        probably be diagnosed.)
+
+        &quot;&quot;&quot;
+        # abandon query parameters
+        path = path.split('?',1)[0]
+        path = path.split('#',1)[0]
+        path = posixpath.normpath(urllib.unquote(path))
+        words = path.split('/')
+        words = filter(None, words)
+        path = os.getcwd()
+        for word in words:
+            drive, word = os.path.splitdrive(word)
+            head, word = os.path.split(word)
+            if word in (os.curdir, os.pardir): continue
+            path = os.path.join(path, word)
+        return path
+
+    def copyfile(self, source, outputfile):
+        &quot;&quot;&quot;Copy all data between two file objects.
+
+        The SOURCE argument is a file object open for reading
+        (or anything with a read() method) and the DESTINATION
+        argument is a file object open for writing (or
+        anything with a write() method).
+
+        The only reason for overriding this would be to change
+        the block size or perhaps to replace newlines by CRLF
+        -- note however that this the default server uses this
+        to copy binary data as well.
+
+        &quot;&quot;&quot;
+        shutil.copyfileobj(source, outputfile)
+
+    def guess_type(self, path):
+        &quot;&quot;&quot;Guess the type of a file.
+
+        Argument is a PATH (a filename).
+
+        Return value is a string of the form type/subtype,
+        usable for a MIME Content-type header.
+
+        The default implementation looks the file's extension
+        up in the table self.extensions_map, using application/octet-stream
+        as a default; however it would be permissible (if
+        slow) to look inside the data to make a better guess.
+
+        &quot;&quot;&quot;
+
+        base, ext = posixpath.splitext(path)
+        if ext in self.extensions_map:
+            return self.extensions_map[ext]
+        ext = ext.lower()
+        if ext in self.extensions_map:
+            return self.extensions_map[ext]
+        else:
+            return self.extensions_map['']
+
+    if not mimetypes.inited:
+        mimetypes.init() # try to read system mime.types
+    extensions_map = mimetypes.types_map.copy()
+    extensions_map.update({
+        '': 'application/octet-stream', # Default
+        '.py': 'text/plain',
+        '.c': 'text/plain',
+        '.h': 'text/plain',
+        })
+
+
+def test(HandlerClass = SimpleHTTPRequestHandler,
+         ServerClass = BaseHTTPServer.HTTPServer):
+    BaseHTTPServer.test(HandlerClass, ServerClass)
+
+if __name__ == '__main__':
+    test()
+&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>jekyll-bootstrap添加代码高亮</title>
+   <link href="http://lzf0514.github.com/javascript/2012/05/22/jekyll-bootstrap-code-highlighting"/>
+   <updated>2012-05-22T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/javascript/2012/05/22/jekyll-bootstrap-code-highlighting</id>
+   <content type="html">&lt;p&gt;jekyll-bootstarp是用&lt;code&gt;markdown&lt;/code&gt;写博文的, 但是markdown默认不支持&lt;code&gt;pre&lt;/code&gt;加class属性&lt;/p&gt;
+
+&lt;p&gt;但是, 支持直接在&lt;code&gt;markdown&lt;/code&gt;中写&lt;code&gt;html&lt;/code&gt;代码, &lt;a href='http://daringfireball.net/projects/markdown/syntax#html'&gt;传送门&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;修改&lt;code&gt;/includes/themes/twitter/default.html&lt;/code&gt;, 添加几行代码&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+&amp;lt;link href=&quot;{\{ ASSET_PATH }\}/google-code-prettify/prettify.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;all&quot;&amp;gt;
+&amp;lt;script type=&quot;text/javascript&quot; src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;script type=&quot;text/javascript&quot; src=&quot;{\{ ASSET_PATH }\}/google-code-prettify/prettify.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/pre&gt;
+&lt;p&gt;其中上传了2个文件, 请对应放好相对应的目录下.&lt;/p&gt;
+
+&lt;p&gt;再添加一段&lt;code&gt;js&lt;/code&gt;, 让其生效, js代码如下&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+!function ($) {
+    $(function(){
+        window.prettyPrint &amp;amp;&amp;amp; prettyPrint();
+    });
+}(window.jQuery);
+&lt;/pre&gt;
+&lt;p&gt;写文章的时候而不是用markdown语法, 直接将要高亮的代码用&lt;code&gt;pre&lt;/code&gt;标签包围&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+&amp;lt;pre class=&quot;prettyprint linenums&quot;&amp;gt;
+    &amp;lt;!-- 包围其中 --&amp;gt;
+&amp;lt;/pre&amp;gt;
+&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>linux tomcat 脚本</title>
+   <link href="http://lzf0514.github.com/linux/2012/05/21/tomcat-start-stop-script"/>
+   <updated>2012-05-21T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/linux/2012/05/21/tomcat-start-stop-script</id>
+   <content type="html">&lt;pre class='prettyprint linenums'&gt;
+#!/bin/bash
+
+PID=`ps -ef | grep tomcat | grep java | grep ClassLoaderLogManager | grep -v grep | awk '{print $2}'`
+
+tomcat_log() {
+  tail -f $CATALINA_HOME/logs/catalina.out
+}
+
+tomcat_start() {
+  if [ -z $PID ]; then
+    echo &quot;[start] start tomcat!&quot;
+    $CATALINA_HOME/bin/startup.sh
+  else
+    echo &quot;[start] tomcat is run!&quot;
+  fi
+}
+
+tomcat_stop() {
+  if [ -n $PID ]; then
+    $CATALINA_HOME/bin/shutdown.sh
+  else
+    echo &quot;[stop] tomcat is not run!&quot;
+  fi
+}
+
+tomcat_kill() {
+  if [ -z $PID ]; then
+    echo &quot;[kill] tomcat is not run!&quot;
+  else
+    echo &quot;[kill] kill tomcat!&quot;
+    kill -9 $PID
+  fi
+}
+
+case $1 in
+  log)
+    tomcat_log
+  ;;
+  start)
+    tomcat_start
+  ;;
+  stop)
+    tomcat_stop
+  ;;
+  kill)
+    tomcat_kill
+  ;;
+  pid)
+    if [ -z $PID ]; then
+      echo &quot;[pid] tomcat is not run!&quot;
+    else
+      echo $PID
+    fi
+  ;;
+  *)
+    echo &quot;default args is start!&quot;
+    tomcat_start
+  ;;
+esac
+&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>erlang配置emacs开发</title>
+   <link href="http://lzf0514.github.com/emacs/2012/05/21/erlang-emacs-ide"/>
+   <updated>2012-05-21T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/emacs/2012/05/21/erlang-emacs-ide</id>
+   <content type="html">&lt;p&gt;打开emacs配置文件, 输入配置文件&lt;/p&gt;
+&lt;pre class='prettyprint linenums lang-lisp'&gt;
+(setq load-path (cons &quot;*erlang安装目录*/lib/tools-*version*/emacs&quot; load-path))
+(setq erlang-root-dir &quot;*erlang安装目录*&quot;)
+(setq exec-path (cons &quot;*erlang安装目录*/bin&quot; exec-path))
+(require 'erlang-start)
+&lt;/pre&gt;
+&lt;p&gt;用emacs打开任意一个&lt;code&gt;*.erl&lt;/code&gt;源文件, 在菜单栏将会看到&lt;code&gt;Erlang&lt;/code&gt;菜单选项.&lt;/p&gt;
+
+&lt;p&gt;打开erlang终端&lt;code&gt;C-c C-z&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;编译文件&lt;code&gt;C-c C-k&lt;/code&gt;&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>使用bottle搭建web</title>
+   <link href="http://lzf0514.github.com/python/2012/05/21/bottle-web-learn"/>
+   <updated>2012-05-21T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/python/2012/05/21/bottle-web-learn</id>
+   <content type="html">&lt;h2 id='bottle'&gt;安装bottle&lt;/h2&gt;
+
+&lt;p&gt;访问bottle官网, &lt;a href='http://bottlepy.org/'&gt;http://bottlepy.org&lt;/a&gt;&lt;br /&gt;github主页: &lt;a href='https://github.com/defnull/bottle'&gt;https://github.com/defnull/bottle&lt;/a&gt;&lt;br /&gt;先在github上clone源码到本地进行安装&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# git clone https://github.com/defnull/bottle.git
+# cd bottle
+# python setup.py install&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;安装完后打开python终端测试是否安装成功&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; import bottle
+&amp;gt;&amp;gt;&amp;gt; bottle.__version__
+&amp;#39;0.10.9&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;能显示出版本号, 说明安装成功&lt;/p&gt;
+
+&lt;h2 id='bottle'&gt;使用bottle进行开发&lt;/h2&gt;
+
+&lt;p&gt;新建一个&lt;code&gt;demo.py&lt;/code&gt;文件&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+from bottle import Bottle, run
+
+app = Bottle()
+
+@app.get(&quot;/&quot;)
+def get_index():
+    return &quot;get index&quot;
+
+@app.post(&quot;/&quot;)
+def post_index():
+    return &quot;post index&quot;
+
+run(app, host=&quot;localhost&quot;, port=9090)
+&lt;/pre&gt;
+&lt;p&gt;终端执行&lt;code&gt;demo.py&lt;/code&gt;文件后, 命令行测试运行效果如下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# curl http://localhost:9090/
+get index
+
+# curl -d &amp;quot;&amp;quot; http://localhost:9090/
+post index&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>在github上搭建博客</title>
+   <link href="http://lzf0514.github.com/javascript/2012/05/18/github-blog-jekyll-bootstrap"/>
+   <updated>2012-05-18T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/javascript/2012/05/18/github-blog-jekyll-bootstrap</id>
+   <content type="html">&lt;h2 id='github'&gt;注册github帐号&lt;/h2&gt;
+
+&lt;p&gt;在github上注册帐号, 如果你的帐号为&lt;code&gt;heroin&lt;/code&gt; 创建&lt;code&gt;heroin.github.com&lt;/code&gt;这个项目.&lt;/p&gt;
+
+&lt;h2 id='jekyll'&gt;安装jekyll&lt;/h2&gt;
+
+&lt;p&gt;安装&lt;code&gt;jekyll&lt;/code&gt;到github上, 这里我用的是 &lt;a href='http://jekyllbootstrap.com/'&gt;Jekyll-Bootstrap&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;执行以下命令&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# git clone https://github.com/plusjade/jekyll-bootstrap.git heroin.github.com
+# cd heroin.github.com
+# git remote set-url origin git@github.com:heroin/heroin.github.com.git
+# git push origin master&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后直接访问&lt;a href='http://heroin.github.com'&gt;http://heroin.github.com&lt;/a&gt;, 就能访问到你搭建的博客了.&lt;/p&gt;
+
+&lt;h2 id='jekyll'&gt;配置jekyll&lt;/h2&gt;
+
+&lt;p&gt;修改&lt;code&gt;_config.yml&lt;/code&gt;文件&lt;/p&gt;
+
+&lt;p&gt;将一些基础信息配置成想要的内容&lt;/p&gt;
+
+&lt;h4 id='id11'&gt;配置首页&lt;/h4&gt;
+
+&lt;p&gt;jekyllbootstrap默认的首页是&lt;code&gt;index.md&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;但是如果需要分页效果的话需要使用的是&lt;code&gt;index.html&lt;/code&gt;, 并且修改&lt;code&gt;_config.yml&lt;/code&gt;, 添加一个配置项&lt;code&gt;paginate: 5&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;详细的配置可以clone我的博客进行看&lt;a href='https://github.com/heroin/heroin.github.com'&gt;https://github.com/heroin/heroin.github.com&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id='id12'&gt;添加文章&lt;/h2&gt;
+
+&lt;p&gt;在&lt;code&gt;_posts&lt;/code&gt;目录下新建一个&lt;code&gt;markdown&lt;/code&gt;(&lt;code&gt;*.md&lt;/code&gt;)文件, 文件命名规范是&lt;code&gt;yyyy-mm-dd-url&lt;/code&gt;, 例如该文章的文件为&lt;code&gt;2012-05-18-github-blog-jekyll-bootstrap.md&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;得到的访问路径却是 &lt;a href='/javascript/2012/05/18/github-blog-jekyll-bootstrap/'&gt;/javascript/2012/05/18/github-blog-jekyll-bootstrap/&lt;/a&gt;&lt;br /&gt;其中&lt;code&gt;/javascript&lt;/code&gt;是在markdown文件中配置的.&lt;/p&gt;
+
+&lt;p&gt;markdown文件头需要几个配置, 以下是该文章的头配置&lt;/p&gt;
+&lt;pre class='prettyprint linenums'&gt;
+---
+layout: post
+title: 在github上搭建博客
+category: javascript
+tags: [github, bootstrap, jekyll, javascript]
+---
+&lt;/pre&gt;
+&lt;p&gt;每个markdown必须在头部加上这段. 然后下面直接写markdown代码就行了.&lt;/p&gt;
+
+&lt;h2 id='id13'&gt;配置域名&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;新建一个&lt;code&gt;CNAME&lt;/code&gt;文件, 里面直接写上所配置的域名, 例如&lt;code&gt;heroin.so&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;然后上域名提供商上配置域名解析, &lt;code&gt;A&lt;/code&gt;记录到&lt;code&gt;207.97.227.245&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;等待域名解析完毕即可, 直接访问&lt;code&gt;http://heroin.github.com&lt;/code&gt; 会跳转至 &lt;code&gt;http://heroin.so&lt;/code&gt;&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Adobe Brackets 安装体验</title>
+   <link href="http://lzf0514.github.com/ide/2012/05/18/adobe-brackets-install"/>
+   <updated>2012-05-18T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/ide/2012/05/18/adobe-brackets-install</id>
+   <content type="html">&lt;p&gt;Brackets 是 Adobe 的开源 &lt;code&gt;HTML/CSS/JavaScript&lt;/code&gt; 集成开发环境. Brackets 提供 Windows 和 OS X 平台支持.&lt;/p&gt;
+
+&lt;p&gt;要想试用先&lt;code&gt;clone&lt;/code&gt;以下几个项目&lt;/p&gt;
+
+&lt;p&gt;&lt;a href='https://github.com/adobe/brackets'&gt;https://github.com/adobe/brackets&lt;/a&gt;&lt;br /&gt;brackets 执行文件(&lt;code&gt;win/mac&lt;/code&gt;)&lt;br /&gt;&lt;a href='https://github.com/adobe/brackets-app'&gt;https://github.com/adobe/brackets-app&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;brackets 所依赖的js库&lt;br /&gt;&lt;a href='https://github.com/jblas/path-utils'&gt;https://github.com/jblas/path-utils&lt;/a&gt;&lt;br /&gt;&lt;a href='https://github.com/adobe/CodeMirror2'&gt;https://github.com/adobe/CodeMirror2&lt;/a&gt;&lt;br /&gt;&lt;a href='https://github.com/laktek/jQuery-Smart-Auto-Complete'&gt;https://github.com/laktek/jQuery-Smart-Auto-Complete&lt;/a&gt;&lt;br /&gt;&lt;a href='https://github.com/douglascrockford/JSLinthttps://github.com/laktek/jQuery-Smart-Auto-Complete'&gt;https://github.com/douglascrockford/JSLint&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# git clone git://github.com/adobe/brackets.git
+# git clone git://github.com/adobe/brackets-app.git
+
+# git clone git://github.com/jblas/path-utils.git
+# git clone git://github.com/adobe/CodeMirror2.git
+# git clone git://github.com/douglascrockford/JSLint.git
+# git clone git://github.com/laktek/jQuery-Smart-Auto-Complete.git&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img alt='' src='/assets/blog/adobe-brackets-install/dir.png' /&gt;&lt;/p&gt;
+
+&lt;h4 id='id9'&gt;安装步骤&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;将&lt;code&gt;brackets&lt;/code&gt;内全部文件移动到&lt;code&gt;brackets-app/brackets&lt;/code&gt;&lt;br /&gt;将&lt;code&gt;CodeMirror2&lt;/code&gt;内全部文件移动到&lt;code&gt;brackets-app/brackets/src/thirdparty/CodeMirror2&lt;/code&gt;&lt;br /&gt;将&lt;code&gt;path-utils&lt;/code&gt;内全部文件移动到&lt;code&gt;brackets-app/brackets/src/thirdparty/path-utils&lt;/code&gt;&lt;br /&gt;将&lt;code&gt;jQuery-Smart-Auto-Complete&lt;/code&gt;内全部文件移动到&lt;code&gt;brackets-app/brackets/src/thirdparty/smart-auto-complete&lt;/code&gt;&lt;br /&gt;将&lt;code&gt;JSLint&lt;/code&gt;内全部文件移动到&lt;code&gt;brackets-app/brackets/src/thirdparty/jslint&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code&gt;# cp -R brackets/* brackets-app/brackets/
+# cp -R CodeMirror2/* brackets-app/brackets/src/thirdparty/CodeMirror2/
+# cp -R jQuery-Smart-Auto-Complete/* brackets-app/brackets/src/thirdparty/smart-auto-complete/
+# cp -R JSLint/* brackets-app/brackets/src/thirdparty/jslint/
+# cp -R path-utils/* brackets-app/brackets/src/thirdparty/path-utils/&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;移动完后直接运行&lt;code&gt;brackets-app/win/bin/Brackets.exe&lt;/code&gt;即可打开, 效果图如下:&lt;br /&gt;&lt;img alt='' src='/assets/blog/adobe-brackets-install/show.png' /&gt;&lt;/p&gt;
+
+&lt;h4 id='id10'&gt;精简步骤&lt;/h4&gt;
+
+&lt;p&gt;&lt;em&gt;windows测试没问题, 应该也兼容于mac&lt;/em&gt;&lt;br /&gt;在原有安装好的基础下, 将&lt;code&gt;brackets-app/bin/win&lt;/code&gt;下全部文件, 复制到&lt;code&gt;brackets-app/brackets/bin&lt;/code&gt;目录下.&lt;br /&gt;然后将&lt;code&gt;brackets-app/brackets&lt;/code&gt;目录单独拷贝出来, 直接打开&lt;code&gt;brackets/bin/Brackets.exe&lt;/code&gt;即可运行.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# mkdir brackets-app/brackets/bin
+# cp -R brackets-app/bin/win/* brackets-app/brackets/bin/&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>google hosts</title>
+   <link href="http://lzf0514.github.com/other/2012/05/17/goole-hosts"/>
+   <updated>2012-05-17T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/other/2012/05/17/goole-hosts</id>
+   <content type="html">&lt;table class='table table-bordered table-striped'&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;ssl.gstatic.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;gg.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;sandbox.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;safebrowsing-cache.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;newsfeed-dot-latest-dot-rovio-ad-engine.appspot.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;images-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;images-pos-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;images-lso-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;a-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;project-slingshot-gp.appspot.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;oauth.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;ct-google.crimecitygame.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;toolbarqueries.clients.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;browsersync.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;www-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;toolbarqueries.google.com.hk&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;www-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;ssl.google-analytics.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;r2303.latest.project-slingshot-hr.appspot.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;r3138-dot-latest-dot-project-slingshot-gp.appspot.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;r3115-dot-latest-dot-project-slingshot-gp.appspot.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;r3232-dot-latest-dot-project-slingshot-gp.appspot.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;r3269-dot-latest-dot-project-slingshot-gp.appspot.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;bt26mravu2qpe56n8gnmjnpv2inl84bf-a-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;8kubpeu8314p2efdd7jlv09an9i2ljdo-a-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;adstvca8k2ooaknjjmv89j22n9t676ve-a-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;ob7f2qc0i50kbjnc81vkhgmb5hsv7a8l-a-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;53rd6p0catml6vat6qra84rs0del836d-a-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;u807isd5egseeabjccgcns005p2miucq-a-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;r70rmsn4s0rhk6cehcbbcbfbs31pu0va-a-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;59cbv4l9s05pbaks9v77vc3mengeqors-a-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;i8brh95qor6r54nkl52hidj2ggcs4jgm-a-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;upt14k1i2veesusrda9nfotcrbp9d7p5-a-oz-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;google.hk&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;www.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;www.gstatic.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;dl-ssl.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;maps.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;mail.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;code.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;docs.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;apis.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;sites.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;groups.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;www.googleapis.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;ajax.googleapis.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;appspot.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;www.appspot.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;www.googlevideo.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;www.blogger.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;www.google.com.hk&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;translate.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;wenda.google.com.hk&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;maps.gstatic.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;webcache.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;googlecode.l.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;mail-attachment.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;maps-api-ssl.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;code-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;images1-focus-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;images2-focus-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;images3-focus-opensocial.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;encrypted.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;chrome.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;profiles.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;plus.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;plusone.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;talkgadget.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;chatenabled.mail.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;picasaweb.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients1.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients2.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients3.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients4.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients5.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients6.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients7.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients1.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients2.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients3.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients4.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients5.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients6.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;clients7.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;lh1.ggpht.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;lh2.ggpht.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;lh3.ggpht.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;lh4.ggpht.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;lh5.ggpht.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;lh6.ggpht.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;lh6.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;lh5.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;lh4.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;lh3.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;lh2.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;lh1.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;s2.googleusercontent.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.1&lt;/td&gt;&lt;td&gt;spreadsheets.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.133&lt;/td&gt;&lt;td&gt;mt0.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.134&lt;/td&gt;&lt;td&gt;mt1.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.135&lt;/td&gt;&lt;td&gt;khm1.google.com&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;203.208.46.136&lt;/td&gt;&lt;td&gt;khm0.google.com&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Heart</title>
+   <link href="http://lzf0514.github.com/other/2012/04/02/heart"/>
+   <updated>2012-04-02T00:00:00+08:00</updated>
+   <id>http://lzf0514.github.com/other/2012/04/02/heart</id>
+   <content type="html">&lt;pre&gt;&lt;code&gt;99669999996669999996699666699666999966699666699
+99699999999699999999699666699669966996699666699
+99669999999999999996699666699699666699699666699
+99666699999999999966666999966699666699699666699
+99666666999999996666666699666699666699699666699
+99666666669999666666666699666669966996699666699
+99666666666996666666666699666666999966669999996&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ 
+</feed>
