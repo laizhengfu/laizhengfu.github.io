@@ -83,11 +83,11 @@ JB :
   comments :
     provider : disqus
     disqus :
-      short_name : Heroin
+      short_name : cngzr
     livefyre :
-      site_id : Heroin
+      site_id : cngzr
     intensedebate :
-      account : Heroin
+      account : cngzr
     facebook :
       appid : 123
       num_posts: 5
